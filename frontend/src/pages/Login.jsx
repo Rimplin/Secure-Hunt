@@ -43,7 +43,7 @@ function Login() {
         </div>
 
         <div className="feature-notice">
-          <p>🚀 Full authentication coming in Sprint 2</p>
+          <p>🚀 Full authentication coming in next Sprint probably</p>
         </div>
       </div>
     </div>

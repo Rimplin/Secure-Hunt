@@ -68,7 +68,7 @@ function ReportSubmission() {
         </form>
 
         <div className="feature-notice">
-          <p>📋 Full report management system coming in Sprint 3</p>
+          <p>📋 Full report management system coming in upcoming Sprints</p>
         </div>
       </div>
     </div>

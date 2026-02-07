@@ -53,7 +53,7 @@ function AIRecommendations() {
         </div>
 
         <div className="feature-notice">
-          <p>🤖 AI recommendation engine launching in Sprint 4</p>
+          <p>🤖 AI recommendation engine launching in upcoming Sprints</p>
         </div>
       </div>
     </div>

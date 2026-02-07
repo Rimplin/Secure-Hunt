@@ -12,6 +12,7 @@ function Navbar(){
             <div className="nav-links">
                 <Link to="/">Home</Link>
                 <Link to="/browser">Browse Bounties</Link>
+                <Link to="/discussion">Forum</Link>
                 <Link to="/report">Submit Report</Link>
                 <Link to="/recommendations">AI Recommendations</Link>
                 <Link to="/login" className="signin-link">

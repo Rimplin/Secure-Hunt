@@ -5,8 +5,11 @@
 
 *{
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: hsl(0, 0%, 0%);
   color:white;
+}
+
+body, html, #root {
+  background-color: hsl(0, 0%, 0%);
 }
 html, body, #root {
   height: 100%;
