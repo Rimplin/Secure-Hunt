@@ -10,9 +10,13 @@ function Navbar(){
             </div>
 
             <div className="nav-links">
-                <Link to="/">Home </Link>
+                <Link to="/">Home</Link>
                 <Link to="/browser">Browse Bounties</Link>
-                <button className="signin-btn">Sign In</button>
+                <Link to="/report">Submit Report</Link>
+                <Link to="/recommendations">AI Recommendations</Link>
+                <Link to="/login" className="signin-link">
+                    <button className="signin-btn">Sign In</button>
+                </Link>
             </div>
         </nav>
     );

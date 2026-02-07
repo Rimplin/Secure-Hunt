@@ -1,0 +1,151 @@
+.report-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: calc(100vh - 120px);
+}
+
+.report-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.report-icon {
+  color: #00c950;
+  margin-bottom: 16px;
+}
+
+.report-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 12px 0;
+  color: white;
+}
+
+.report-header p {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.report-content {
+  background-color: hsl(0, 0%, 5%);
+  border: 1px solid rgba(0, 201, 80, 0.3);
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(0, 201, 80, 0.1);
+}
+
+.report-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-section label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #00c950;
+  text-transform: uppercase;
+}
+
+.form-section input,
+.form-section select,
+.form-section textarea {
+  background-color: hsl(0, 0%, 8%);
+  border: 1px solid rgba(0, 201, 80, 0.2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: white;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  transition: all 0.3s ease;
+}
+
+.form-section input:focus,
+.form-section select:focus,
+.form-section textarea:focus {
+  outline: none;
+  border-color: #00c950;
+  box-shadow: 0 0 0 2px rgba(0, 201, 80, 0.1);
+}
+
+.form-section input::placeholder,
+.form-section textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.file-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 2px dashed rgba(0, 201, 80, 0.3);
+  border-radius: 8px;
+  padding: 32px 20px;
+  background-color: rgba(0, 201, 80, 0.05);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.file-upload:hover {
+  border-color: #00c950;
+  background-color: rgba(0, 201, 80, 0.1);
+}
+
+.file-upload svg {
+  color: #00c950;
+}
+
+.file-upload input[type="file"] {
+  display: none;
+}
+
+.file-upload p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #00c950;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: hsl(144, 100%, 27%);
+  transform: translateY(-2px);
+}
+
+.feature-notice {
+  background-color: rgba(0, 201, 80, 0.1);
+  border: 1px solid rgba(0, 201, 80, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  margin-top: 24px;
+  font-size: 13px;
+}
+
+.feature-notice p {
+  margin: 0;
+}

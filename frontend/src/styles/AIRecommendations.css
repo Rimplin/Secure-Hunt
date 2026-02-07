@@ -1,0 +1,127 @@
+.ai-container {
+  min-height: calc(100vh - 120px);
+  padding: 40px 20px;
+}
+
+.ai-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.ai-icon {
+  color: #00c950;
+  margin-bottom: 16px;
+}
+
+.ai-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 12px 0;
+  color: white;
+}
+
+.ai-header p {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.ai-content {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.recommendation-card {
+  background-color: hsl(0, 0%, 5%);
+  border: 1px solid rgba(0, 201, 80, 0.3);
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.recommendation-card:hover {
+  border-color: #00c950;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 201, 80, 0.15);
+}
+
+.card-icon {
+  color: #00c950;
+  margin-bottom: 16px;
+}
+
+.recommendation-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 12px 0;
+  color: white;
+}
+
+.recommendation-card p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.placeholder-section {
+  background-color: hsl(0, 0%, 5%);
+  border: 2px dashed rgba(0, 201, 80, 0.3);
+  border-radius: 12px;
+  padding: 60px 40px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.placeholder-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.placeholder-box p {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.placeholder-box .small-text {
+  font-size: 14px;
+  color: #00c950;
+  font-weight: 600;
+}
+
+.feature-notice {
+  background-color: rgba(0, 201, 80, 0.1);
+  border: 1px solid rgba(0, 201, 80, 0.3);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.feature-notice p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .ai-header h2 {
+    font-size: 24px;
+  }
+
+  .recommendations-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .placeholder-section {
+    padding: 40px 20px;
+  }
+}

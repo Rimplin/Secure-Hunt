@@ -1,5 +1,34 @@
 {
+  "name": "secure-hunt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rimplin/Secure-Hunt.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Rimplin/Secure-Hunt/issues"
+  },
+  "homepage": "https://github.com/Rimplin/Secure-Hunt#readme",
   "dependencies": {
-    "lucide-react": "^0.563.0"
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.13.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
   }
 }
