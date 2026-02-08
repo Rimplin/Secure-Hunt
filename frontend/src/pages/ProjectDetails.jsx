@@ -1,17 +1,34 @@
-// frontend/src/pages/ProjectDetails.jsx
 import { Link, useParams } from "react-router-dom";
-import { projects } from "../data/projects";
+import { useEffect, useState } from "react";
 
 function ProjectDetails() {
   const { id } = useParams();
-  const project = projects.find((p) => p.id === Number(id));
+  const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/projects/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Project not found");
+        return res.json();
+      })
+      .then((data) => {
+        setProject(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [id]);
+
+  if (loading) {
+    return <div style={{ padding: "40px" }}>Loading...</div>;
+  }
 
   if (!project) {
     return (
       <div style={{ padding: "40px" }}>
         <h1>Project Details</h1>
         <p style={{ color: "hsl(0, 0%, 71%)" }}>
-          Project not found for ID <strong>{id}</strong>.
+          Project not found.
         </p>
         <Link to="/browser" className="view-link">
           <button className="viewDetails-button">Back to Browse</button>
@@ -33,7 +50,6 @@ function ProjectDetails() {
     <div style={{ padding: "40px" }}>
       <h1>Project Details</h1>
 
-      {/* Match Browse Bounties card styling */}
       <div className="proj-card" style={{ maxWidth: "800px" }}>
         <h3 style={{ marginBottom: "10px" }}>{project.name}</h3>
         <div className="bounty-badge" style={{ marginBottom: "18px" }}>

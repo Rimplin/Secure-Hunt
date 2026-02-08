@@ -1,8 +1,16 @@
-// frontend/src/pages/BountyBrowser.jsx
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { projects } from "../data/projects";
 
 function BountyBrowser() {
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/projects")
+      .then((res) => res.json())
+      .then((data) => setProjects(data))
+      .catch((err) => console.error("Failed to fetch projects:", err));
+  }, []);
+
   return (
     <>
       <div className="page2">
@@ -14,7 +22,6 @@ function BountyBrowser() {
           <span style={{ color: "#00c950" }}> BOUNTIES</span>
         </h3>
 
-        {/* Sprint 1: placeholder only */}
         <button
           className="post-button"
           onClick={() => alert("Coming in Sprint 2")}
@@ -35,12 +42,12 @@ function BountyBrowser() {
 
       <div className="projects">
         {projects.map((proj) => (
-          <div className="proj-card" key={proj.id}>
+          <div className="proj-card" key={proj._id}>
             <h3>{proj.name}</h3>
             <div className="bounty-badge">{proj.bounty}</div>
 
-            {/* IMPORTANT: no Link state. Just route by id */}
-            <Link to={`/projects/${proj.id}`} className="view-link">
+            {/* IMPORTANT: use Mongo _id now */}
+            <Link to={`/projects/${proj._id}`} className="view-link">
               <button className="viewDetails-button">View Details</button>
             </Link>
           </div>
