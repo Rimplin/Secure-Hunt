@@ -7,7 +7,7 @@ function ProjectDetails() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/projects/${id}`)
+    fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/projects/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Project not found");
         return res.json();
