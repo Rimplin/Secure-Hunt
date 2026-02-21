@@ -9,7 +9,7 @@ function ProjectDetails() {
   useEffect(() => {
     const API_URL = import.meta.env.VITE_API_URL;
 
-    fetch(`${API_URL}/api/projects/${id}`)
+    fetch(`fetch("https://secure-hunt-backend.onrender.com/api/projects/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Project not found");
         return res.json();
