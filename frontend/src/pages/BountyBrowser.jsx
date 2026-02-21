@@ -6,7 +6,7 @@ function BountyBrowser() {
 
   useEffect(() => {
     const API_URL = import.meta.env.VITE_API_URL;
-    fetch(`fetch("https://secure-hunt-backend.onrender.com/api/projects")`)
+    fetch(`https://secure-hunt-backend.onrender.com/api/projects`)
       .then((res) => res.json())
       .then((data) => setProjects(data))
       .catch((err) => console.error("Failed to fetch projects:", err));
