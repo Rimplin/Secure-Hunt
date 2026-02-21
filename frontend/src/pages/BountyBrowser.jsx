@@ -5,7 +5,8 @@ function BountyBrowser() {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/projects")
+    const API_URL = import.meta.env.VITE_API_URL;
+    fetch(`${API_URL}/api/projects`)
       .then((res) => res.json())
       .then((data) => setProjects(data))
       .catch((err) => console.error("Failed to fetch projects:", err));
