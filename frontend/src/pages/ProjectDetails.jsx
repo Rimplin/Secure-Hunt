@@ -5,7 +5,7 @@ function ProjectDetails() {
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  //
   useEffect(() => {
     fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/projects/${id}`)
       .then((res) => {

@@ -43,7 +43,7 @@ const projects = [
   },
 ];
 
-
+//
 const seed = async () => {
   await connectDB();
 
