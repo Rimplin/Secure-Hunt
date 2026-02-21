@@ -6,7 +6,9 @@ const connectDB = require("./config/db");
 const app = express();
 
 // middleware
-app.use(cors());
+app.use(cors({
+  origin: "https://securehunt.vercel.app"
+}));
 app.use(express.json());
 
 // connect database
