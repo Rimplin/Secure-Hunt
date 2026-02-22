@@ -14,6 +14,7 @@ function SignUp() {
     const email = e.target.email.value;
     const password = e.target.password.value;
     const confirmPassword = e.target.confirmPassword.value;
+    const role = e.target.role.value;
 
     if (password !== confirmPassword) {
       return setError("Passwords do not match");
@@ -27,7 +28,7 @@ function SignUp() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({ email, password, role }),
         }
       );
 
@@ -73,6 +74,14 @@ function SignUp() {
           <div className="form-group">
             <label>Confirm Password</label>
             <input type="password" name="confirmPassword" required />
+          </div>
+
+          <div className="form-group">
+            <label>Account Type</label>
+            <select name="role" required>
+                <option value="hunter">Hunter</option>
+                <option value="company">Company</option>
+            </select>
           </div>
 
           {error && <p style={{ color: "red" }}>{error}</p>}

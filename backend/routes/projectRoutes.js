@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Project = require("../models/Project");
+const { protect, authorize } = require("../middleware/authMiddleware");
 
 // GET all projects
 router.get("/", async (req, res) => {
@@ -26,5 +27,9 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ message: "Invalid project ID" });
   }
 });
+
+router.post("/", protect, authorize("company", "administrator"), async(req, res) => {
+  //create project logic
+})
 
 module.exports = router;
