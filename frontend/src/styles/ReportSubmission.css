@@ -149,3 +149,70 @@
 .feature-notice p {
   margin: 0;
 }
+
+/* Feedback banner */
+.feedback-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.feedback-banner.success {
+  background-color: rgba(0, 201, 80, 0.12);
+  border: 1px solid rgba(0, 201, 80, 0.4);
+  color: #00c950;
+}
+
+.feedback-banner.error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+/* File list */
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(0, 201, 80, 0.07);
+  border: 1px solid rgba(0, 201, 80, 0.2);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.remove-file {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.remove-file:hover {
+  color: #f87171;
+}
+
+/* Disabled submit button */
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+

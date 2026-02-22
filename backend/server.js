@@ -7,7 +7,10 @@ const app = express();
 
 // middleware
 app.use(cors({
-  origin: "https://securehunt.vercel.app"
+  origin: [
+    "https://securehunt.vercel.app", // production
+    "http://localhost:5173",          // local dev
+  ]
 }));
 app.use(express.json());
 
@@ -16,6 +19,7 @@ connectDB();
 
 // routes
 app.use("/api/projects", require("./routes/projectRoutes"));
+app.use("/api/reports", require("./routes/reportRoutes"));
 
 app.get("/", (req, res) => {
   res.send("API running...");
@@ -26,3 +30,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+// Trigger restart
