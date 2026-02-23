@@ -1,6 +1,11 @@
 import { Link } from 'react-router-dom'
+import { useContext } from 'react'
+import { AuthContext } from '../context/AuthContext_helper'
 import logo from "../assets/Secure-Hunt-pic-black.png"
+
 function Navbar(){
+    const { user } = useContext(AuthContext)
+    
     return(
         <nav className= "navbar">
             <div className="nav-left">
@@ -14,6 +19,9 @@ function Navbar(){
                 <Link to="/browser">Browse Bounties</Link>
                 <Link to="/discussion">Forum</Link>
                 <Link to="/report">Submit Report</Link>
+                {user && user.role === 'company' && (
+                    <Link to="/rate-reports">Reports</Link>
+                )}
                 <Link to="/recommendations">AI Recommendations</Link>
                 <Link to="/login" className="signin-link">
                     <button className="signin-btn">Sign In</button>
