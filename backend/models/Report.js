@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const attachmentSchema = new mongoose.Schema({
-  filename: { type: String, required: true },      // GridFS stored filename
+  filename: { type: String, required: true },      // GridFS stored filename c
   originalName: { type: String, required: true },  // original file name from user
   mimetype: { type: String },
 });
