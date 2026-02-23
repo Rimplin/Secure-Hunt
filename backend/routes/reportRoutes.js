@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Report = require("../models/Report");
-const { protect } = require("../middleware/authMiddleware");
+const { protect, authorize } = require("../middleware/authMiddleware");
 
 // @route   POST /api/reports
 // @desc    Submit a new vulnerability report
@@ -91,7 +91,7 @@ router.get("/:id", protect, async (req, res) => {
 // @route   PUT /api/reports/:id/rate
 // @desc    Rate a report based on quality (1-5 stars)
 // @access  Private (company/admin only)
-router.put("/:id/rate", protect, async (req, res) => {
+router.put("/:id/rate", protect, authorize("company", "administrator"), async (req, res) => {
   try {
     // Check if user is company or admin
     if (req.user.role !== "company" && req.user.role !== "administrator") {

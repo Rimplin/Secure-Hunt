@@ -21,7 +21,7 @@ function Navbar(){
                 <Link to="/browser">Browse Bounties</Link>
                 <Link to="/discussion">Forum</Link>
                 <Link to="/report">Submit Report</Link>
-                {user && user.role === 'company' && (
+                {user && (user.role === "company" || user.role === "administrator") && (
                     <Link to="/rate-reports">Reports</Link>
                 )}
                 <Link to="/recommendations">AI Recommendations</Link>
