@@ -21,12 +21,18 @@ const reportSchema = new mongoose.Schema(
     },
     description: { type: String, required: true },
     attachments: [attachmentSchema],
+    submittedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     status: {
       type: String,
       enum: ["pending", "reviewed", "accepted", "rejected"],
       default: "pending",
     },
-    // TODO: add submittedBy: { type: ObjectId, ref: "User" } when auth is ready
+    rating: { type: Number, min: 1, max: 5, default: null },
+    ratedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    ratedAt: { type: Date },
   },
   { timestamps: true }
 );

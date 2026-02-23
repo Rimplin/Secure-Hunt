@@ -1,238 +1,269 @@
 import { useState, useEffect, useContext } from 'react'
-import { Star, MessageSquare } from 'lucide-react'
+import { Star, ShieldAlert, Clock, CheckCircle, XCircle, Eye } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext_helper'
 import '../styles/ReportRating.css'
 
-function ReportRating() {
-  const { user } = useContext(AuthContext)
-  const [reports, setReports] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [hoverRating, setHoverRating] = useState({})
-  const [selectedReport, setSelectedReport] = useState(null)
+const BASE = import.meta.env.VITE_REACT_APP_BACKEND_BASEURL
 
-  useEffect(() => {
-    // Mock data - simulating reports from API
-    const mockReports = [
-      {
-        _id: '1',
-        title: 'SQL Injection Vulnerability in Login Form',
-        severity: 'critical',
-        description: 'Found SQL injection in the login form that allows bypassing authentication',
-        submittedBy: { email: 'hunter1@example.com' },
-        rating: 5,
-        ratedAt: new Date('2024-02-20'),
-        status: 'approved'
-      },
-      {
-        _id: '2',
-        title: 'XSS Attack in Comment Section',
-        severity: 'high',
-        description: 'Stored XSS vulnerability allows injecting malicious scripts in comments',
-        submittedBy: { email: 'hunter2@example.com' },
-        rating: 4,
-        ratedAt: new Date('2024-02-19'),
-        status: 'approved'
-      },
-      {
-        _id: '3',
-        title: 'Missing CSRF Token Protection',
-        severity: 'high',
-        description: 'API endpoints do not validate CSRF tokens on state-changing operations',
-        submittedBy: { email: 'hunter3@example.com' },
-        rating: null,
-        status: 'pending'
-      },
-      {
-        _id: '4',
-        title: 'Weak Password Policy',
-        severity: 'medium',
-        description: 'System allows passwords shorter than 8 characters',
-        submittedBy: { email: 'hunter4@example.com' },
-        rating: 3,
-        ratedAt: new Date('2024-02-18'),
-        status: 'approved'
-      },
-    ]
-    setReports(mockReports)
-    setLoading(false)
-  }, [])
+const SEVERITY_COLORS = {
+  critical: '#dc2626',
+  high: '#ea580c',
+  medium: '#ca8a04',
+  low: '#16a34a',
+}
 
-  const handleRating = (reportId, stars) => {
-    // Update the rating for a report
-    const updatedReports = reports.map((report) => {
-      if (report._id === reportId) {
-        return {
-          ...report,
-          rating: stars,
-          ratedAt: new Date(),
-        }
-      }
-      return report
-    })
-    setReports(updatedReports)
-    setSelectedReport(null)
-  }
+const STATUS_META = {
+  pending: { color: '#ca8a04', bg: '#fefce8', icon: <Clock size={12} /> },
+  reviewed: { color: '#3b82f6', bg: '#eff6ff', icon: <Eye size={12} /> },
+  accepted: { color: '#16a34a', bg: '#f0fdf4', icon: <CheckCircle size={12} /> },
+  rejected: { color: '#dc2626', bg: '#fef2f2', icon: <XCircle size={12} /> },
+}
 
-  const getSeverityColor = (severity) => {
-    const colors = {
-      critical: '#dc2626',
-      high: '#ea580c',
-      medium: '#ca8a04',
-      low: '#16a34a',
-    }
-    return colors[severity] || '#6b7280'
-  }
-
-  const getStatusBadge = (status) => {
-    const statuses = {
-      pending: '#ca8a04',
-      'under-review': '#3b82f6',
-      approved: '#16a34a',
-      rejected: '#dc2626',
-    }
-    return statuses[status] || '#6b7280'
-  }
-
-  if (loading) {
-    return <div className="rating-loading">Loading reports...</div>
-  }
-
+function StarPicker({ value, onChange }) {
+  const [hover, setHover] = useState(0)
   return (
-    <div className="rating-container">
-      <div className="rating-header">
-        <Star size={32} className="rating-icon" />
-        <h2>Rate Vulnerability Reports</h2>
-        <p>Help reward high-quality security research by rating submitted reports</p>
-      </div>
-
-      <div className="rating-stats">
-        <div className="stat-card">
-          <div className="stat-number">{reports.length}</div>
-          <div className="stat-label">Total Reports</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-number">{reports.filter((r) => r.rating).length}</div>
-          <div className="stat-label">Rated</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-number">
-            {reports.filter((r) => r.rating)
-              ? (
-                  reports.reduce((sum, r) => sum + (r.rating || 0), 0) /
-                  (reports.filter((r) => r.rating).length || 1)
-                ).toFixed(1)
-              : 'N/A'}
-          </div>
-          <div className="stat-label">Avg Rating</div>
-        </div>
-      </div>
-
-      <div className="reports-grid">
-        {reports.map((report) => (
-          <div key={report._id} className="report-card">
-            <div className="card-header">
-              <div>
-                <h3>{report.title}</h3>
-                <p className="email-text">by {report.submittedBy.email}</p>
-              </div>
-              <div className="card-badges">
-                <span
-                  className="severity-badge"
-                  style={{ backgroundColor: getSeverityColor(report.severity) }}
-                >
-                  {report.severity}
-                </span>
-                <span
-                  className="status-badge"
-                  style={{ backgroundColor: getStatusBadge(report.status) }}
-                >
-                  {report.status}
-                </span>
-              </div>
-            </div>
-
-            <div className="card-description">
-              <p>{report.description}</p>
-            </div>
-
-            <div className="card-rating">
-              {selectedReport === report._id ? (
-                <div className="rating-selector">
-                  <span>Rate this report:</span>
-                  <div className="stars">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        size={24}
-                        className="star"
-                        fill={star <= (hoverRating[report._id] || 0) ? '#fbbf24' : 'none'}
-                        color={star <= (hoverRating[report._id] || 0) ? '#fbbf24' : '#d1d5db'}
-                        onMouseEnter={() => setHoverRating({ ...hoverRating, [report._id]: star })}
-                        onMouseLeave={() => setHoverRating({ ...hoverRating, [report._id]: 0 })}
-                        onClick={() => handleRating(report._id, star)}
-                      />
-                    ))}
-                  </div>
-                  <button
-                    className="cancel-btn"
-                    onClick={() => setSelectedReport(null)}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ) : (
-                <div className="rating-display">
-                  {report.rating ? (
-                    <>
-                      <div className="rating-value">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            size={18}
-                            fill={i < report.rating ? '#fbbf24' : 'none'}
-                            color="#fbbf24"
-                          />
-                        ))}
-                      </div>
-                      <span className="rating-text">{report.rating}.0 / 5.0</span>
-                      <span className="rating-date">
-                        Rated on {report.ratedAt ? new Date(report.ratedAt).toLocaleDateString() : 'N/A'}
-                      </span>
-                      <button
-                        className="rate-btn"
-                        onClick={() => setSelectedReport(report._id)}
-                      >
-                        Update Rating
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <p className="no-rating">Not rated yet</p>
-                      <button
-                        className="rate-btn"
-                        onClick={() => setSelectedReport(report._id)}
-                      >
-                        <Star size={18} />
-                        Rate Now
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="rating-info">
-        <MessageSquare size={20} />
-        <p>
-          <strong>Rating Guide:</strong> 5⭐ = Excellent research with clear POC | 4⭐ = Good quality findings |
-          3⭐ = Acceptable findings | 2⭐ = Basic findings | 1⭐ = Low quality findings
-        </p>
-      </div>
+    <div className="stars">
+      {[1, 2, 3, 4, 5].map((s) => (
+        <Star
+          key={s}
+          size={22}
+          className="star"
+          fill={s <= (hover || value) ? '#fbbf24' : 'none'}
+          color={s <= (hover || value) ? '#fbbf24' : '#4b5563'}
+          onMouseEnter={() => setHover(s)}
+          onMouseLeave={() => setHover(0)}
+          onClick={() => onChange(s)}
+        />
+      ))}
     </div>
   )
 }
 
-export default ReportRating
+export default function ReportRating() {
+  const { user, loading: authLoading } = useContext(AuthContext)
+  const [reports, setReports] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [filterSeverity, setFilterSeverity] = useState('all')
+  const [filterStatus, setFilterStatus] = useState('all')
+  const [ratingFor, setRatingFor] = useState(null)   // report id being rated
+  const [saving, setSaving] = useState({})     // { [id]: true }
+
+  // --- fetch reports ---
+  useEffect(() => {
+    if (authLoading) return
+    if (!user || (user.role !== 'company' && user.role !== 'administrator')) return
+
+    const load = async () => {
+      try {
+        const res = await fetch(`${BASE}/api/reports`, { credentials: 'include' })
+        if (!res.ok) throw new Error('Failed to load reports')
+        const data = await res.json()
+        setReports(data)
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    load()
+  }, [user, authLoading])
+
+  // --- rate a report ---
+  const handleRate = async (id, stars) => {
+    setSaving((s) => ({ ...s, [id]: true }))
+    try {
+      const res = await fetch(`${BASE}/api/reports/${id}/rate`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ rating: stars }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message)
+      setReports((prev) => prev.map((r) => (r._id === id ? { ...r, rating: stars, ratedAt: new Date() } : r)))
+      setRatingFor(null)
+    } catch (err) {
+      alert('Error saving rating: ' + err.message)
+    } finally {
+      setSaving((s) => ({ ...s, [id]: false }))
+    }
+  }
+
+  // --- update status ---
+  const handleStatus = async (id, status) => {
+    setSaving((s) => ({ ...s, [id]: true }))
+    try {
+      const res = await fetch(`${BASE}/api/reports/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ status }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message)
+      setReports((prev) => prev.map((r) => (r._id === id ? { ...r, status } : r)))
+    } catch (err) {
+      alert('Error updating status: ' + err.message)
+    } finally {
+      setSaving((s) => ({ ...s, [id]: false }))
+    }
+  }
+
+  // --- access guard ---
+  if (authLoading) {
+    return <div className="cr-loading"><div className="cr-spinner" />Loading...</div>
+  }
+
+  if (!user || (user.role !== 'company' && user.role !== 'administrator')) {
+    return (
+      <div className="cr-denied">
+        <ShieldAlert size={48} />
+        <h2>Access Denied</h2>
+        <p>This page is only accessible to company and administrator accounts.</p>
+      </div>
+    )
+  }
+
+  if (loading) return <div className="cr-loading"><div className="cr-spinner" />Loading reports...</div>
+  if (error) return <div className="cr-loading" style={{ color: '#dc2626' }}>Error: {error}</div>
+
+  // --- filter ---
+  const visible = reports.filter((r) => {
+    const okSev = filterSeverity === 'all' || r.severity === filterSeverity
+    const okSta = filterStatus === 'all' || r.status === filterStatus
+    return okSev && okSta
+  })
+
+  const total = reports.length
+  const pending = reports.filter((r) => r.status === 'pending').length
+  const accepted = reports.filter((r) => r.status === 'accepted').length
+  const avgRating = (() => {
+    const rated = reports.filter((r) => r.rating)
+    return rated.length ? (rated.reduce((s, r) => s + r.rating, 0) / rated.length).toFixed(1) : '—'
+  })()
+
+  return (
+    <div className="cr-container">
+
+      {/* Header */}
+      <div className="cr-header">
+        <Star size={36} className="cr-header-icon" />
+        <h2>Company Reports Dashboard</h2>
+        <p>Review and manage vulnerability reports submitted to your projects</p>
+      </div>
+
+      {/* Stats */}
+      <div className="cr-stats">
+        <div className="cr-stat-card cr-stat-total">
+          <div className="cr-stat-num">{total}</div>
+          <div className="cr-stat-label">Total Reports</div>
+        </div>
+        <div className="cr-stat-card cr-stat-pending">
+          <div className="cr-stat-num">{pending}</div>
+          <div className="cr-stat-label">Pending</div>
+        </div>
+        <div className="cr-stat-card cr-stat-accepted">
+          <div className="cr-stat-num">{accepted}</div>
+          <div className="cr-stat-label">Accepted</div>
+        </div>
+        <div className="cr-stat-card cr-stat-rating">
+          <div className="cr-stat-num">{avgRating}</div>
+          <div className="cr-stat-label">Avg Rating</div>
+        </div>
+      </div>
+
+      {/* Empty */}
+      {reports.length === 0 && (
+        <div className="cr-empty">
+          <ShieldAlert size={40} />
+          <p>No reports submitted yet.</p>
+        </div>
+      )}
+
+      {/* Cards */}
+      <div className="cr-grid">
+        {reports.map((report) => {
+          const meta = STATUS_META[report.status] || STATUS_META.pending
+          const isSaving = saving[report._id]
+
+          return (
+            <div key={report._id} className="cr-card">
+
+              {/* Card top */}
+              <div className="cr-card-top">
+                <div className="cr-card-title-wrap">
+                  <h3>{report.title}</h3>
+                  <p className="cr-project-name">📁 {report.projectId?.name || 'Unknown Project'}</p>
+                  <p className="cr-submitted-by">
+                    by {report.submittedBy?.email || 'Anonymous'} &bull;{' '}
+                    {new Date(report.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+                <span className="cr-severity-badge" style={{ background: SEVERITY_COLORS[report.severity] }}>
+                  {report.severity}
+                </span>
+              </div>
+
+              {/* Description */}
+              <p className="cr-description">{report.description}</p>
+
+              {/* Status control */}
+              <div className="cr-status-row">
+                <span className="cr-status-badge" style={{ color: meta.color, background: meta.bg }}>
+                  {meta.icon} {report.status}
+                </span>
+                <select
+                  className="cr-status-select"
+                  value={report.status}
+                  disabled={isSaving}
+                  onChange={(e) => handleStatus(report._id, e.target.value)}
+                >
+                  <option value="pending">Pending</option>
+                  <option value="reviewed">Reviewed</option>
+                  <option value="accepted">Accepted</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+
+              {/* Rating */}
+              <div className="cr-rating-area">
+                {ratingFor === report._id ? (
+                  <div className="cr-rating-picker">
+                    <span>Select a rating:</span>
+                    <StarPicker value={report.rating || 0} onChange={(s) => handleRate(report._id, s)} />
+                    <button className="cr-cancel-btn" onClick={() => setRatingFor(null)}>Cancel</button>
+                  </div>
+                ) : (
+                  <div className="cr-rating-display">
+                    {report.rating ? (
+                      <>
+                        <div className="cr-stars-row">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} size={16}
+                              fill={i < report.rating ? '#fbbf24' : 'none'}
+                              color="#fbbf24"
+                            />
+                          ))}
+                          <span className="cr-rating-val">{report.rating}.0 / 5</span>
+                        </div>
+                        <button className="cr-rate-btn" onClick={() => setRatingFor(report._id)}>
+                          Update Rating
+                        </button>
+                      </>
+                    ) : (
+                      <button className="cr-rate-btn cr-rate-btn-new" onClick={() => setRatingFor(report._id)}>
+                        <Star size={15} /> Rate Report
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}

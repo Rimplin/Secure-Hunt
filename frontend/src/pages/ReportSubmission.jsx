@@ -50,7 +50,7 @@ function ReportSubmission() {
 
       const res = await fetch(
         `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/reports`,
-        { method: 'POST', body: formData }
+        { method: 'POST', body: formData, credentials: 'include' }
       )
 
       const data = await res.json()

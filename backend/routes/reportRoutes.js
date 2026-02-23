@@ -12,6 +12,7 @@ const { protect, authorize } = require("../middleware/authMiddleware");
 router.post(
   "/",
   protect,
+  authorize("hunter"),
   upload.array("attachments", 5), // max 5 files
   async (req, res) => {
     try {
@@ -50,6 +51,7 @@ router.post(
         severity,
         description,
         attachments,
+        submittedBy: req.user._id,
       });
 
       res.status(201).json({ message: "Report submitted successfully!", report });
@@ -73,6 +75,7 @@ router.get("/", protect, async (req, res) => {
 
     const reports = await Report.find(query)
       .populate("projectId", "name bounty")
+      .populate("submittedBy", "email")
       .sort({ createdAt: -1 });
 
     res.json(reports);
@@ -97,6 +100,33 @@ router.get("/:id", protect, async (req, res) => {
     res.json(report);
   } catch (error) {
     console.error("Error fetching report:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+// @route   PUT /api/reports/:id/status
+// @desc    Update report status
+// @access  Private (company/admin only)
+router.put("/:id/status", protect, authorize("company", "administrator"), async (req, res) => {
+  try {
+    const { status } = req.body;
+    const validStatuses = ["pending", "reviewed", "accepted", "rejected"];
+
+    if (!status || !validStatuses.includes(status)) {
+      return res.status(400).json({ message: `Status must be one of: ${validStatuses.join(", ")}` });
+    }
+
+    const report = await Report.findById(req.params.id);
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+
+    report.status = status;
+    const updated = await report.save();
+
+    res.json({ message: `Status updated to "${status}"`, report: updated });
+  } catch (error) {
+    console.error("Error updating status:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
