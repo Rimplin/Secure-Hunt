@@ -63,7 +63,7 @@ router.post("/login", async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: true, //This only works if we're using HTTPS
-      //secure: false, //TEMPORARY for local testing purposes only since we're using http://localhost:5000
+      //secure: false, //TEMPORARY for local testing purposes only since we're using http://localhost:5001
       sameSite: "none", //Works best with HTTPS and might cause issues when testing locally with HTTP so will be disabled temporarily
       //sameSite: "lax", //TEMPORARY for testing when using localhost as the url
       partitioned: true, //Since our cookie is cross-site (foreign) httpOnly cookie there are stricter rules to follow when it comes to these types of cookies. (Without this cookie still exists but it will seem empty in Devtoold -> Application and invokes a warning of being rejected soon)
