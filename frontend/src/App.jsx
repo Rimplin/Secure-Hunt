@@ -7,6 +7,7 @@ import ProjectDetails from './pages/ProjectDetails.jsx'
 import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
 import ReportSubmission from './pages/ReportSubmission.jsx'
+import ReportRating from './pages/ReportRating.jsx'
 import AIRecommendations from './pages/AIRecommendations.jsx'
 import Discussion from './pages/Discussion.jsx'
 function App() { 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/report" element={<ReportSubmission/>}/>
+        <Route path="/rate-reports" element={<ReportRating/>}/>
         <Route path="/recommendations" element={<AIRecommendations/>}/>
         <Route path="/discussion" element={<Discussion/>}/>
       </Routes>

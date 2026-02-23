@@ -21,6 +21,7 @@ connectDB();
 // routes
 app.use("/api/projects", require("./routes/projectRoutes"));
 app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/reports", require("./routes/reportRoutes"));
 
 app.get("/", (req, res) => {
   res.send("API running...");
