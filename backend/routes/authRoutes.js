@@ -17,7 +17,6 @@ const createToken = (user) => {
 router.post("/register", async (req, res) => {
   try {
     const { email, password, role } = req.body;
-    console.log(role);
 
     const existingUser = await User.findOne({ email });
     if (existingUser)
