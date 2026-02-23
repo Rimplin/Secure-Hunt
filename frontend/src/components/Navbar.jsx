@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { useContext } from 'react'
 import { AuthContext } from '../context/AuthContext_helper'
@@ -15,14 +16,11 @@ function Navbar(){
             </div>
 
             <div className="nav-links">
-                <Link to="/">Home</Link>
-                <Link to="/browser">Browse Bounties</Link>
-                <Link to="/discussion">Forum</Link>
-                <Link to="/report">Submit Report</Link>
-                {user && user.role === 'company' && (
-                    <Link to="/rate-reports">Reports</Link>
-                )}
-                <Link to="/recommendations">AI Recommendations</Link>
+                <NavLink to="/" className={({isActive}) => isActive? "nav-active" : ""}>Home</NavLink>
+                <NavLink to="/browser" className={({isActive}) => isActive? "nav-active" : ""}>Browse Bounties</NavLink>
+                <NavLink to="/discussion" className={({isActive}) => isActive? "nav-active" : ""}>Forum</NavLink>
+                <NavLink to="/report" className={({isActive}) => isActive? "nav-active" : ""}>Submit Report</NavLink>
+                <NavLink to="/recommendations" className={({isActive}) => isActive? "nav-active" : ""}>AI Recommendations</NavLink>
                 <Link to="/login" className="signin-link">
                     <button className="signin-btn">Sign In</button>
                 </Link>

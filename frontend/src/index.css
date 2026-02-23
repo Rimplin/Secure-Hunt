@@ -41,18 +41,24 @@ html, body, #root {
 .website-name2{
   font-size: 22px;
   font-weight:bold;
+  color:hsl(144, 100%, 39%);
 }
 .nav-links{
   display: flex;
   gap:40px;
   align-items:center;
 }
-.nav-links a{
+.nav-links a, .nav-links .nav-active  {
   color: white;
   text-decoration: none;
+  font-weight: 500;
+}
+.nav-links .nav-active{
+  color: hsl(144, 100%, 39%);
+  
 }
 .nav-links a:hover{
-  color:#00c950;
+  color:hsl(144, 100%, 39%);
 }
 .nav-left{
   display: flex;
@@ -82,7 +88,7 @@ html, body, #root {
 
 
 .big-text{
- margin-top:150px;
+ margin-top:130px;
  text-align: center;
  font-size: 65px;
 }
@@ -202,20 +208,22 @@ html, body, #root {
   background-color: hsl(144, 100%, 39%);
   color: white;
   border: none;
-  padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
-  padding: 10px 20px;
+  padding: 10px 10px;
   font-weight: bold;
   margin-right:30px;
   display: flex;
 }
-/*.plus-icon{
+.plus-icon{
   background-color: hsl(144, 100%, 39%);
   margin:0px 5px;
-}*/
+}
 .post-button:hover{
   background-color: hsl(144, 100%, 27%);
+}
+.post-link{
+  text-decoration: none;
 }
 
 

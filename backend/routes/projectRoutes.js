@@ -28,8 +28,24 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", protect, authorize("company", "administrator"), async(req, res) => {
-  //create project logic
-})
+router.post("/", protect, authorize("company", "administrator"), async (req, res) => {
+  try {
+    
+    const {
+    name,bounty,description,
+    
+    techStack
+    } = req.body;
+
+  if(!name || !bounty || !description  )
+    return res.status(400).json({message:"Missing required fields"});
+    const newProject = new Project(req.body);
+    const saved = await newProject.save();
+    res.status(201).json(saved);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 module.exports = router;
