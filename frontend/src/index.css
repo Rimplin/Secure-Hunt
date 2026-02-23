@@ -280,3 +280,37 @@ html, body, #root {
   margin-top: auto;
   align-self: flex-end;
 }
+.role-badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-right: 12px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.role-badge.hunter {
+  background: rgba(0, 201, 80, 0.15);
+  color: #00c950;
+  border: 1px solid #00c950;
+  box-shadow: 0 0 8px rgba(0, 201, 80, 0.4);
+}
+.role-badge.company {
+  background: rgba(0, 123, 255, 0.15);
+  color: #007bff;
+  border: 1px solid #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+}
+.role-badge.administrator {
+  background: rgba(170, 0, 255, 0.15);
+  color: #aa00ff;
+  border: 1px solid #aa00ff;
+  box-shadow: 0 0 10px rgba(170, 0, 255, 0.5);
+}
+.role-badge:hover {
+  transform: translateY(-2px);
+}
