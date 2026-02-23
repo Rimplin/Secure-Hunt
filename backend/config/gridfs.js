@@ -1,16 +1,6 @@
 const multer = require("multer");
-const { GridFsStorage } = require("multer-gridfs-storage");
 
-const storage = new GridFsStorage({
-    url: process.env.MONGO_URI,
-    options: { useNewUrlParser: true, useUnifiedTopology: true },
-    file: (req, file) => {
-        return {
-            bucketName: "uploads",         // GridFS bucket name (collection prefix)
-            filename: `${Date.now()}-${file.originalname}`,
-        };
-    },
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({
     storage,
@@ -20,6 +10,8 @@ const upload = multer({
         const allowed = [
             "image/png", "image/jpeg", "image/gif", "image/webp",
             "application/pdf", "text/plain", "application/zip",
+            "application/msword", // .doc
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" // .docx
         ];
         if (allowed.includes(file.mimetype)) {
             cb(null, true);

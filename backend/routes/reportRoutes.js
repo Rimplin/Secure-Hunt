@@ -20,11 +20,28 @@ router.post(
                 return res.status(400).json({ message: "All required fields must be filled." });
             }
 
-            const attachments = (req.files || []).map((f) => ({
-                filename: f.filename,
-                originalName: f.originalname,
-                mimetype: f.mimetype,
-            }));
+            const db = mongoose.connection.db;
+            const bucket = new GridFSBucket(db, { bucketName: "uploads" });
+
+            const attachments = [];
+            for (const f of (req.files || [])) {
+                const filename = `${Date.now()}-${f.originalname.replace(/[^a-zA-Z0-9.-]/g, "_")}`; // clean filename
+
+                await new Promise((resolve, reject) => {
+                    const uploadStream = bucket.openUploadStream(filename, {
+                        contentType: f.mimetype
+                    });
+                    uploadStream.once('finish', resolve);
+                    uploadStream.once('error', reject);
+                    uploadStream.end(f.buffer);
+                });
+
+                attachments.push({
+                    filename: filename,
+                    originalName: f.originalname,
+                    mimetype: f.mimetype,
+                });
+            }
 
             const report = await Report.create({
                 projectId,

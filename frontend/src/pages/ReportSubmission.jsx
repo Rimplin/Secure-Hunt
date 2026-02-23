@@ -143,7 +143,7 @@ function ReportSubmission() {
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 multiple
-                accept="image/*,.pdf,.txt,.zip"
+                accept="image/*,.pdf,.txt,.zip,.doc,.docx"
               />
               <p>Click to browse files (max 5, 10MB each)</p>
             </div>
