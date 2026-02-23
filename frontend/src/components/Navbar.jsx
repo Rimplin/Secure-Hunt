@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import { useContext } from 'react'
 import { AuthContext } from '../context/AuthContext_helper'
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/Secure-Hunt-pic-black.png"
 
 function Navbar(){
-    const { user } = useContext(AuthContext)
+    const { user, logout } = useContext(AuthContext);
+    const navigate = useNavigate();
     
     return(
         <nav className= "navbar">
@@ -23,9 +25,27 @@ function Navbar(){
                     <Link to="/rate-reports">Reports</Link>
                 )}
                 <Link to="/recommendations">AI Recommendations</Link>
-                <Link to="/login" className="signin-link">
-                    <button className="signin-btn">Sign In</button>
-                </Link>
+                {user ? (
+                    <>
+                        <span style={{ marginRight: "10px" }}>
+                        {user.role.toUpperCase()}
+                        </span>
+
+                        <button
+                        className="signin-btn"
+                        onClick={async () => {
+                            await logout();
+                            navigate("/");
+                          }}
+                        >
+                        Logout
+                        </button>
+                    </>
+                    ) : (
+                    <Link to="/login" className="signin-link">
+                        <button className="signin-btn">Sign In</button>
+                    </Link>
+                    )}
             </div>
         </nav>
     );
