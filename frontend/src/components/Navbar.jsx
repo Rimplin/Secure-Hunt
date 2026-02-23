@@ -27,7 +27,7 @@ function Navbar(){
                 <Link to="/recommendations">AI Recommendations</Link>
                 {user ? (
                     <>
-                        <span style={{ marginRight: "10px" }}>
+                        <span className={`role-badge ${user.role}`}>
                         {user.role.toUpperCase()}
                         </span>
 
