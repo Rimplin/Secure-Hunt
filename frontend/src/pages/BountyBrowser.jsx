@@ -38,7 +38,7 @@ function BountyBrowser() {
       </p>
 
       <div className="projects">
-        {Array.isArray(projects) && projects.map((proj) => (
+        {projects.map((proj) => (
           <div className="proj-card" key={proj._id}>
             <h3>{proj.name}</h3>
             <div className="bounty-badge">
