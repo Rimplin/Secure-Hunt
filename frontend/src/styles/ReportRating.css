@@ -423,3 +423,33 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Attachments */
+.cr-attachments {
+  margin-top: 12px;
+}
+
+.cr-attachments-title {
+  margin: 0 0 6px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.cr-attachments-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cr-attachment-link {
+  color: #00c950;
+  text-decoration: none;
+  font-weight: 600;
+  border: 1px solid rgba(0, 201, 80, 0.35);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.cr-attachment-link:hover {
+  opacity: 0.85;
+}

@@ -81,7 +81,9 @@ export default function ReportRating() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.message)
-      setReports((prev) => prev.map((r) => (r._id === id ? { ...r, rating: stars, ratedAt: new Date() } : r)))
+      setReports((prev) =>
+        prev.map((r) => (r._id === id ? { ...r, rating: stars, ratedAt: new Date() } : r))
+      )
       setRatingFor(null)
     } catch (err) {
       alert('Error saving rating: ' + err.message)
@@ -112,7 +114,12 @@ export default function ReportRating() {
 
   // --- access guard ---
   if (authLoading) {
-    return <div className="cr-loading"><div className="cr-spinner" />Loading...</div>
+    return (
+      <div className="cr-loading">
+        <div className="cr-spinner" />
+        Loading...
+      </div>
+    )
   }
 
   if (!user || (user.role !== 'company' && user.role !== 'administrator')) {
@@ -125,8 +132,22 @@ export default function ReportRating() {
     )
   }
 
-  if (loading) return <div className="cr-loading"><div className="cr-spinner" />Loading reports...</div>
-  if (error) return <div className="cr-loading" style={{ color: '#dc2626' }}>Error: {error}</div>
+  if (loading) {
+    return (
+      <div className="cr-loading">
+        <div className="cr-spinner" />
+        Loading reports...
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="cr-loading" style={{ color: '#dc2626' }}>
+        Error: {error}
+      </div>
+    )
+  }
 
   // --- filter ---
   const visible = reports.filter((r) => {
@@ -140,12 +161,13 @@ export default function ReportRating() {
   const accepted = reports.filter((r) => r.status === 'accepted').length
   const avgRating = (() => {
     const rated = reports.filter((r) => r.rating)
-    return rated.length ? (rated.reduce((s, r) => s + r.rating, 0) / rated.length).toFixed(1) : '—'
+    return rated.length
+      ? (rated.reduce((s, r) => s + r.rating, 0) / rated.length).toFixed(1)
+      : '—'
   })()
 
   return (
     <div className="cr-container">
-
       {/* Header */}
       <div className="cr-header">
         <Star size={36} className="cr-header-icon" />
@@ -183,30 +205,54 @@ export default function ReportRating() {
 
       {/* Cards */}
       <div className="cr-grid">
-        {reports.map((report) => {
+        {visible.map((report) => {
           const meta = STATUS_META[report.status] || STATUS_META.pending
           const isSaving = saving[report._id]
 
           return (
             <div key={report._id} className="cr-card">
-
               {/* Card top */}
               <div className="cr-card-top">
                 <div className="cr-card-title-wrap">
                   <h3>{report.title}</h3>
-                  <p className="cr-project-name">📁 {report.projectId?.name || 'Unknown Project'}</p>
+                  <p className="cr-project-name">
+                    📁 {report.projectId?.name || 'Unknown Project'}
+                  </p>
                   <p className="cr-submitted-by">
                     by {report.submittedBy?.email || 'Anonymous'} &bull;{' '}
                     {new Date(report.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <span className="cr-severity-badge" style={{ background: SEVERITY_COLORS[report.severity] }}>
+                <span
+                  className="cr-severity-badge"
+                  style={{ background: SEVERITY_COLORS[report.severity] }}
+                >
                   {report.severity}
                 </span>
               </div>
 
               {/* Description */}
               <p className="cr-description">{report.description}</p>
+
+              {/* Attachments */}
+              {report.attachments?.length > 0 && (
+                <div className="cr-attachments">
+                  <p className="cr-attachments-title">Attachments:</p>
+                  <div className="cr-attachments-list">
+                    {report.attachments.map((a, idx) => (
+                      <a
+                        key={`${report._id}-${idx}`}
+                        className="cr-attachment-link"
+                        href={`${BASE}/api/reports/files/${a.filename}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        View {a.originalName || `file-${idx + 1}`}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Status control */}
               <div className="cr-status-row">
@@ -232,7 +278,9 @@ export default function ReportRating() {
                   <div className="cr-rating-picker">
                     <span>Select a rating:</span>
                     <StarPicker value={report.rating || 0} onChange={(s) => handleRate(report._id, s)} />
-                    <button className="cr-cancel-btn" onClick={() => setRatingFor(null)}>Cancel</button>
+                    <button className="cr-cancel-btn" onClick={() => setRatingFor(null)}>
+                      Cancel
+                    </button>
                   </div>
                 ) : (
                   <div className="cr-rating-display">
@@ -240,7 +288,9 @@ export default function ReportRating() {
                       <>
                         <div className="cr-stars-row">
                           {[...Array(5)].map((_, i) => (
-                            <Star key={i} size={16}
+                            <Star
+                              key={i}
+                              size={16}
                               fill={i < report.rating ? '#fbbf24' : 'none'}
                               color="#fbbf24"
                             />
@@ -259,7 +309,6 @@ export default function ReportRating() {
                   </div>
                 )}
               </div>
-
             </div>
           )
         })}
