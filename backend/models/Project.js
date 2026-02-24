@@ -12,11 +12,11 @@ const projectSchema = new mongoose.Schema(
     description: { type: String, required: true },
 
     techStack: {
-      frontend: { type:Object },
-      backend: { type:Object },
-      database: { type:Object },
-      webServer: { type:Object },
-      os: { type:Object },
+      frontend: stackItem,
+      backend: stackItem,
+      database: stackItem,
+      webServer: stackItem,
+      os: stackItem,
     },
   },
   { timestamps: true }

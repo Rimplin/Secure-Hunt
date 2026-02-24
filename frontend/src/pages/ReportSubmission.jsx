@@ -91,7 +91,7 @@ function ReportSubmission() {
             <label htmlFor="projectId">Select Project *</label>
             <select id="projectId" value={form.projectId} onChange={handleChange} required>
               <option value="">Choose a project...</option>
-              {Array.isArray(projects) && projects.map((proj) => (
+              {projects.map((proj) => (
                 <option key={proj._id} value={proj._id}>
                   {proj.name} — {proj.bounty}
                 </option>

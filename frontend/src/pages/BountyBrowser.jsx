@@ -22,9 +22,12 @@ function BountyBrowser() {
           <span style={{ color: "#00c950" }}> BOUNTIES</span>
         </h3>
 
-        <Link to="/create" className= "post-link">
-           <button className= "post-button">Post Project</button>
-        </Link>
+        <button
+          className="post-button"
+          onClick={() => alert("Coming in Sprint 2")}
+        >
+          Post Project
+        </button>
       </div>
 
       <p
@@ -38,12 +41,10 @@ function BountyBrowser() {
       </p>
 
       <div className="projects">
-        {Array.isArray(projects) && projects.map((proj) => (
+        {projects.map((proj) => (
           <div className="proj-card" key={proj._id}>
             <h3>{proj.name}</h3>
-            <div className="bounty-badge">
-              {proj.bounty.startsWith("$")? proj.bounty: `$${proj.bounty}`}
-              </div>
+            <div className="bounty-badge">{proj.bounty}</div>
 
             {/* IMPORTANT: use Mongo _id now */}
             <Link to={`/projects/${proj._id}`} className="view-link">

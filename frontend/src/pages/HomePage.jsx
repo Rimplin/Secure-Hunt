@@ -23,7 +23,7 @@ function HomePage(){
             <Link to="/browser" className="bounty-page">
             <button className="button1" >Browse All Bounties</button>
             </Link>
-            <Link to="/create" className="post-program">
+            <Link to="/browser" className="post-program">
             <button className="button2" >Post Your Program</button>
             </Link>
             
