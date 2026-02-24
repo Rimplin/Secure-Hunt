@@ -52,19 +52,6 @@ function CreateProject(){
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(projectData)
-       /* const token = localStorage.getItem("token"); // <-- Make sure your login stores JWT here
-
-       const res = await fetch(
-      `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/projects`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}` // <-- send JWT
-        },
-        credentials:"include",
-        body: JSON.stringify(projectData)*/
-      
       });
 
       if (res.ok) 
@@ -86,11 +73,8 @@ function CreateProject(){
         webServerVersion:"",
         osType:"",
         osVersion:""
-        });
-      }
-      else {alert("Error creating project");
-        
-      }
+        });}
+      else alert("Error creating project");
     } catch (err) {
       console.error(err);
     }

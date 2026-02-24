@@ -215,10 +215,10 @@ html, body, #root {
   margin-right:30px;
   display: flex;
 }
-/*.plus-icon{
+.plus-icon{
   background-color: hsl(144, 100%, 39%);
   margin:0px 5px;
-}*/
+}
 .post-button:hover{
   background-color: hsl(144, 100%, 27%);
 }

@@ -23,7 +23,7 @@ function Navbar(){
                 <NavLink to="/discussion" className={({isActive}) => isActive? "nav-active" : ""}>Forum</NavLink>
                 <NavLink to="/report" className={({isActive}) => isActive? "nav-active" : ""}>Submit Report</NavLink>
                 {user && (user.role === "company" || user.role === "administrator") && (
-                    <NavLink to="/rate-reports" className={({isActive}) => isActive? "nav-active" : ""} >Reports</NavLink>
+                    <Link to="/rate-reports">Reports</Link>
                 )}
                 <NavLink to="/recommendations" className={({isActive}) => isActive? "nav-active" : ""}>AI Recommendations</NavLink>
                 {user ? (
