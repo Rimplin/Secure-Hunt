@@ -10,6 +10,7 @@ import ReportSubmission from './pages/ReportSubmission.jsx'
 import ReportRating from './pages/ReportRating.jsx'
 import AIRecommendations from './pages/AIRecommendations.jsx'
 import Discussion from './pages/Discussion.jsx'
+import CreateProject from './pages/CreateProject.jsx'
 function App() { 
    return(
       <div className="app-container">
@@ -24,6 +25,7 @@ function App() {
         <Route path="/rate-reports" element={<ReportRating/>}/>
         <Route path="/recommendations" element={<AIRecommendations/>}/>
         <Route path="/discussion" element={<Discussion/>}/>
+        <Route path="/create" element={<CreateProject />} />
       </Routes>
       
       <Footer/>
