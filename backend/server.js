@@ -11,7 +11,7 @@ app.use(cors({
   origin: [
     "https://securehunt.vercel.app", // production
     "http://localhost:5173",          // local dev
-    "https://securehunt-git-feature-view-attachments-rimplins-projects.vercel.app/",
+    //"https://securehunt-git-feature-view-attachments-rimplins-projects.vercel.app/",
   ],
   credentials: true,
 }));
