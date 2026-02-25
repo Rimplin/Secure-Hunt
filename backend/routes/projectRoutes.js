@@ -47,5 +47,4 @@ router.post("/", protect, authorize("company", "administrator"), async (req, res
   }
 });
 
-
 module.exports = router;
