@@ -11,6 +11,8 @@ import ReportRating from './pages/ReportRating.jsx'
 import AIRecommendations from './pages/AIRecommendations.jsx'
 import Discussion from './pages/Discussion.jsx'
 import CreateProject from './pages/CreateProject.jsx'
+import CVESearch from './pages/CVESearch.jsx'
+
 function App() { 
    return(
       <div className="app-container">
@@ -19,6 +21,7 @@ function App() {
         <Route path="/" element={<HomePage/>} />
         <Route path="/browser" element={<BountyBrowser/>}/>
         <Route path="/projects/:id" element={<ProjectDetails />}/>
+        <Route path="/cves" element={<CVESearch />}/>
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/report" element={<ReportSubmission/>}/>

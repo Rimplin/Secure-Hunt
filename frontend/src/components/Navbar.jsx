@@ -20,6 +20,7 @@ function Navbar(){
             <div className="nav-links">
                 <NavLink to="/" className={({isActive}) => isActive? "nav-active" : ""}>Home</NavLink>
                 <NavLink to="/browser" className={({isActive}) => isActive? "nav-active" : ""}>Browse Bounties</NavLink>
+                <NavLink to="/cves" className={({isActive}) => isActive? "nav-active" : ""}>CVE Search</NavLink>
                 <NavLink to="/discussion" className={({isActive}) => isActive? "nav-active" : ""}>Forum</NavLink>
                 <NavLink to="/report" className={({isActive}) => isActive? "nav-active" : ""}>Submit Report</NavLink>
                 {user && (user.role === "company" || user.role === "administrator") && (
