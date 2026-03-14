@@ -14,31 +14,6 @@ router.get("/", async (req, res) => {
 });
 
 // SEARCH projects
-/*router.get("/search", async (req, res) => {
-  try {
-    const keyword = req.query.q;
-
-    if (!keyword) {
-      return res.status(400).json({ message: "Search keyword required" });
-    }
-
-    const projects = await Project.find({
-      $or: [
-        { name: { $regex: keyword, $options: "i" } },
-        { description: { $regex: keyword, $options: "i" } },
-        { "techStack.frontend.type": { $regex: keyword, $options: "i" } },
-        { "techStack.backend.type": { $regex: keyword, $options: "i" } },
-        { "techStack.database.type": { $regex: keyword, $options: "i" } },
-        { "techStack.webServer.type": { $regex: keyword, $options: "i" } },
-        { "techStack.os.type": { $regex: keyword, $options: "i" } }
-      ]
-    }).sort({ createdAt: -1 });
-
-    res.json(projects);
-  } catch (err) {
-    res.status(500).json({ message: "Search failed" });
-  }
-});*/
 router.get("/search", async (req, res) => {
   try {
 
