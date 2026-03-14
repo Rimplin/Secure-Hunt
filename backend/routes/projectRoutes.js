@@ -13,6 +13,68 @@ router.get("/", async (req, res) => {
   }
 });
 
+// SEARCH projects
+router.get("/search", async (req, res) => {
+  try {
+
+    const {
+      q,
+      frontend,
+      backend,
+      database,
+      webServer,
+      os,
+      minBounty,
+      maxBounty
+    } = req.query;
+
+    let query = {};
+
+    if (q) {
+      query.$or = [
+        { name: { $regex: q, $options: "i" } },
+        { description: { $regex: q, $options: "i" } }
+      ];
+    }
+
+    if (frontend)
+      query["techStack.frontend.type"] = { $regex: frontend, $options: "i" };
+
+    if (backend)
+      query["techStack.backend.type"] = { $regex: backend, $options: "i" };
+
+    if (database)
+      query["techStack.database.type"] = { $regex: database, $options: "i" };
+
+    if (webServer)
+      query["techStack.webServer.type"] = { $regex: webServer, $options: "i" };
+
+    if (os)
+      query["techStack.os.type"] = { $regex: os, $options: "i" };
+
+    if (minBounty || maxBounty) {
+  query.$expr = {
+    $and: [
+      minBounty
+        ? { $gte: [{ $toInt: { $substr: ["$bounty", 1, -1] } }, parseInt(minBounty)] }
+        : { $gte: [0, 0] },
+
+      maxBounty
+        ? { $lte: [{ $toInt: { $substr: ["$bounty", 1, -1] } }, parseInt(maxBounty)] }
+        : { $lte: [0, 999999999] }
+    ]
+  };
+}
+
+    const projects = await Project.find(query).sort({ createdAt: -1 });
+
+    res.json(projects);
+
+  } catch (err) {
+    res.status(500).json({ message: "Search failed" });
+  }
+});
+
 // GET project by Mongo ID
 router.get("/:id", async (req, res) => {
   try {

@@ -3,13 +3,59 @@ import { Link } from "react-router-dom";
 
 function BountyBrowser() {
   const [projects, setProjects] = useState([]);
+  const [search, setSearch] = useState("");
+  const [noResults, setNoResults] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/projects`)
-      .then((res) => res.json())
-      .then((data) => setProjects(data))
-      .catch((err) => console.error("Failed to fetch projects:", err));
-  }, []);
+  const [frontend, setFrontend] = useState("");
+  const [backend, setBackend] = useState("");
+  const [database, setDatabase] = useState("");
+  const [webServer, setWebServer] = useState("");
+  const [os, setOs] = useState("");
+
+  const [minBounty, setMinBounty] = useState("");
+  const [maxBounty, setMaxBounty] = useState("");
+
+  const loadProjects = () => {
+  fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/projects`)
+    .then((res) => res.json())
+    .then((data) => {
+      setProjects(data);
+      setNoResults(false);
+    });
+};
+
+useEffect(() => {
+  loadProjects();
+}, []);
+
+const handleEnterSearch = (e) => {
+  if (e.key === "Enter") {
+    searchProjects();
+  }
+};
+
+
+const searchProjects = () => {
+
+  const params = new URLSearchParams();
+
+  if (search) params.append("q", search);
+  if (frontend) params.append("frontend", frontend);
+  if (backend) params.append("backend", backend);
+  if (database) params.append("database", database);
+  if (webServer) params.append("webServer", webServer);
+  if (os) params.append("os", os);
+  if (minBounty) params.append("minBounty", minBounty);
+  if (maxBounty) params.append("maxBounty", maxBounty);
+
+  fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/projects/search?${params.toString()}`)
+    .then(res => res.json())
+    .then(data => {
+      setProjects(data);
+      setNoResults(data.length === 0);
+    });
+};
 
   return (
     <>
@@ -37,6 +83,235 @@ function BountyBrowser() {
         Discover projects and get paid for securing the ecosystem.
       </p>
 
+      <div style={{ margin: "20px 40px" }}>
+      <input
+        type="text"
+        placeholder="Search projects by keyword..."
+        value={search}
+        onChange={(e) => {
+          const value = e.target.value;
+          setSearch(value);
+
+          if (value === "") {
+          loadProjects();
+          }
+        }}
+        onKeyDown={(e) => {
+        if (e.key === "Enter") {
+        searchProjects();
+        }
+      }}
+      style={{
+      padding: "10px",
+      width: "800px",
+      marginRight: "10px",
+      marginBottom: "30px",
+      borderRadius: "6px",
+      border: "1px solid #00c950",
+      background: "black",
+      color: "white"
+    }}
+  />
+  <button
+  onClick={() => setShowAdvanced(!showAdvanced)}
+  style={{
+    padding: "8px 14px",
+    background: "#222",
+    border: "1px solid #00c950",
+    color: "white",
+    borderRadius: "6px",
+    cursor: "pointer",
+    marginLeft: "10px",
+    marginRight: "10px"
+  }}
+>
+  Advanced Search
+</button >
+{showAdvanced && (
+  <div
+    style={{
+      margin: "20px 40px",
+      display: "grid",
+      gridTemplateColumns: "repeat(4, 1fr)",
+      gap: "10px",
+      maxWidth: "900px"
+      
+    }}
+
+  >
+
+    <div><input
+      placeholder="Frontend (React, Angular...)"
+      value={frontend}
+      onChange={(e) => setFrontend(e.target.value)}
+      onKeyDown={handleEnterSearch}
+      style={{
+      padding: "10px",
+      marginRight: "10px",
+      marginBottom: "30px",
+      borderRadius: "6px",
+      border: "1px solid #00c950",
+      background: "black",
+      color: "white",
+      width:"200px"
+    }}
+    /></div>
+
+    <div>
+    <input
+      placeholder="Backend (Node, Django...)"
+      value={backend}
+      onChange={(e) => setBackend(e.target.value)}
+      onKeyDown={handleEnterSearch}
+      style={{
+      padding: "10px",
+      marginRight: "10px",
+      marginBottom: "30px",
+      borderRadius: "6px",
+      border: "1px solid #00c950",
+      background: "black",
+      color: "white",
+      width:"200px"
+    }}
+    /></div>
+
+    <div>
+    <input
+      placeholder="Database (MongoDB, MySQL...)"
+      value={database}
+      onChange={(e) => setDatabase(e.target.value)}
+      onKeyDown={handleEnterSearch}
+      style={{
+      padding: "10px",
+      marginRight: "10px",
+      marginBottom: "30px",
+      borderRadius: "6px",
+      border: "1px solid #00c950",
+      background: "black",
+      color: "white",
+      width:"200px"
+    }}
+    /></div>
+
+    <div>
+    <input
+      placeholder="Web Server (Nginx, Apache...)"
+      value={webServer}
+      onChange={(e) => setWebServer(e.target.value)}
+      onKeyDown={handleEnterSearch}
+      style={{
+      padding: "10px",
+      marginRight: "10px",
+      marginBottom: "30px",
+      borderRadius: "6px",
+      border: "1px solid #00c950",
+      background: "black",
+      color: "white",
+      width:"200px"
+    }}
+    /></div>
+
+    <div>
+    <input
+      placeholder="Operating System"
+      value={os}
+      onChange={(e) => setOs(e.target.value)}
+      onKeyDown={handleEnterSearch}
+      style={{
+      padding: "10px",
+      marginRight: "10px",
+      marginBottom: "30px",
+      borderRadius: "6px",
+      border: "1px solid #00c950",
+      background: "black",
+      color: "white",
+      width:"200px"
+    }}
+    /></div>
+
+    <input
+      type="number"
+      placeholder="Min Bounty"
+      value={minBounty}
+      onChange={(e) => setMinBounty(e.target.value)}
+      onKeyDown={handleEnterSearch}
+      style={{
+      padding: "10px",
+      marginRight: "10px",
+      marginBottom: "30px",
+      borderRadius: "6px",
+      border: "1px solid #00c950",
+      background: "black",
+      color: "white",
+      width:"200px"
+    }}
+    />
+
+    <input
+      type="number"
+      placeholder="Max Bounty"
+      value={maxBounty}
+      onChange={(e) => setMaxBounty(e.target.value)}
+      onKeyDown={handleEnterSearch}
+      style={{
+      padding: "10px",
+      marginRight: "10px",
+      marginBottom: "30px",
+      borderRadius: "6px",
+      border: "1px solid #00c950",
+      background: "black",
+      color: "white",
+      width:"200px"
+    }}
+    />
+    <button
+  onClick={() => {
+    setSearch("");
+    setFrontend("");
+    setBackend("");
+    setDatabase("");
+    setWebServer("");
+    setOs("");
+    setMinBounty("");
+    setMaxBounty("");
+    loadProjects();
+  }}
+  style={{
+      padding: "10px",
+      marginRight: "10px",
+      marginBottom: "30px",
+      background: "black",
+      border: "1px solid hsl(0, 0%, 68%)",
+      color: "white",
+      borderRadius: "6px",
+      cursor: "pointer",
+      width:"222px"
+    }}
+>
+Clear Filters
+</button>
+  </div>
+)}
+
+
+  <span><button
+    onClick={searchProjects}
+    style={{
+      padding: "10px 16px",
+      background: "#00c950",
+      border: "none",
+      borderRadius: "6px",
+      cursor: "pointer",
+      width:"200px",
+      hover:"hsl(144, 78%, 76%)"
+    }}
+  >
+    Search
+  </button></span>
+  
+</div>
+
+
       <div className="projects">
         {Array.isArray(projects) && projects.map((proj) => (
           <div className="proj-card" key={proj._id}>
@@ -52,6 +327,11 @@ function BountyBrowser() {
           </div>
         ))}
       </div>
+      {noResults && (
+      <p style={{ color: "white", margin: "40px" }}>
+       No projects with this keyword
+      </p>
+      )}
     </>
   );
 }
