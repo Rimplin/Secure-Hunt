@@ -115,195 +115,133 @@ const searchProjects = () => {
   <button
   onClick={() => setShowAdvanced(!showAdvanced)}
   style={{
-    padding: "8px 14px",
+    padding: "8px 16px",
     background: "#222",
     border: "1px solid #00c950",
     color: "white",
+    fontWeight: "bold",
+    fontSize: "15px",
     borderRadius: "6px",
     cursor: "pointer",
     marginLeft: "10px",
-    marginRight: "10px"
+    marginRight: "10px",
+    height: "40px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center"
   }}
 >
   Advanced Search
-</button >
-{showAdvanced && (
-  <div
-    style={{
-      margin: "20px 40px",
-      display: "grid",
-      gridTemplateColumns: "repeat(4, 1fr)",
-      gap: "10px",
-      maxWidth: "900px"
-      
-    }}
-
-  >
-
-    <div><input
-      placeholder="Frontend (React, Angular...)"
-      value={frontend}
-      onChange={(e) => setFrontend(e.target.value)}
-      onKeyDown={handleEnterSearch}
-      style={{
-      padding: "10px",
-      marginRight: "10px",
-      marginBottom: "30px",
-      borderRadius: "6px",
-      border: "1px solid #00c950",
-      background: "black",
-      color: "white",
-      width:"200px"
-    }}
-    /></div>
-
-    <div>
-    <input
-      placeholder="Backend (Node, Django...)"
-      value={backend}
-      onChange={(e) => setBackend(e.target.value)}
-      onKeyDown={handleEnterSearch}
-      style={{
-      padding: "10px",
-      marginRight: "10px",
-      marginBottom: "30px",
-      borderRadius: "6px",
-      border: "1px solid #00c950",
-      background: "black",
-      color: "white",
-      width:"200px"
-    }}
-    /></div>
-
-    <div>
-    <input
-      placeholder="Database (MongoDB, MySQL...)"
-      value={database}
-      onChange={(e) => setDatabase(e.target.value)}
-      onKeyDown={handleEnterSearch}
-      style={{
-      padding: "10px",
-      marginRight: "10px",
-      marginBottom: "30px",
-      borderRadius: "6px",
-      border: "1px solid #00c950",
-      background: "black",
-      color: "white",
-      width:"200px"
-    }}
-    /></div>
-
-    <div>
-    <input
-      placeholder="Web Server (Nginx, Apache...)"
-      value={webServer}
-      onChange={(e) => setWebServer(e.target.value)}
-      onKeyDown={handleEnterSearch}
-      style={{
-      padding: "10px",
-      marginRight: "10px",
-      marginBottom: "30px",
-      borderRadius: "6px",
-      border: "1px solid #00c950",
-      background: "black",
-      color: "white",
-      width:"200px"
-    }}
-    /></div>
-
-    <div>
-    <input
-      placeholder="Operating System"
-      value={os}
-      onChange={(e) => setOs(e.target.value)}
-      onKeyDown={handleEnterSearch}
-      style={{
-      padding: "10px",
-      marginRight: "10px",
-      marginBottom: "30px",
-      borderRadius: "6px",
-      border: "1px solid #00c950",
-      background: "black",
-      color: "white",
-      width:"200px"
-    }}
-    /></div>
-
-    <input
-      type="number"
-      placeholder="Min Bounty"
-      value={minBounty}
-      onChange={(e) => setMinBounty(e.target.value)}
-      onKeyDown={handleEnterSearch}
-      style={{
-      padding: "10px",
-      marginRight: "10px",
-      marginBottom: "30px",
-      borderRadius: "6px",
-      border: "1px solid #00c950",
-      background: "black",
-      color: "white",
-      width:"200px"
-    }}
-    />
-
-    <input
-      type="number"
-      placeholder="Max Bounty"
-      value={maxBounty}
-      onChange={(e) => setMaxBounty(e.target.value)}
-      onKeyDown={handleEnterSearch}
-      style={{
-      padding: "10px",
-      marginRight: "10px",
-      marginBottom: "30px",
-      borderRadius: "6px",
-      border: "1px solid #00c950",
-      background: "black",
-      color: "white",
-      width:"200px"
-    }}
-    />
-    <button
-  onClick={() => {
-    setSearch("");
-    setFrontend("");
-    setBackend("");
-    setDatabase("");
-    setWebServer("");
-    setOs("");
-    setMinBounty("");
-    setMaxBounty("");
-    loadProjects();
-  }}
-  style={{
-      padding: "10px",
-      marginRight: "10px",
-      marginBottom: "30px",
-      background: "black",
-      border: "1px solid hsl(0, 0%, 68%)",
-      color: "white",
-      borderRadius: "6px",
-      cursor: "pointer",
-      width:"222px"
-    }}
->
-Clear Filters
 </button>
+{showAdvanced && (
+  <div className="modal-overlay" onClick={() => setShowAdvanced(false)}>
+    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-header">
+        <h2 className="modal-title">Advanced Search</h2>
+        <button className="modal-close-btn" onClick={() => setShowAdvanced(false)}>&times;</button>
+      </div>
+
+      <div className="modal-grid">
+        <input
+          placeholder="Frontend (React, Angular...)"
+          value={frontend}
+          onChange={(e) => setFrontend(e.target.value)}
+          onKeyDown={handleEnterSearch}
+          className="modal-input"
+        />
+        <input
+          placeholder="Backend (Node, Django...)"
+          value={backend}
+          onChange={(e) => setBackend(e.target.value)}
+          onKeyDown={handleEnterSearch}
+          className="modal-input"
+        />
+        <input
+          placeholder="Database (MongoDB, MySQL...)"
+          value={database}
+          onChange={(e) => setDatabase(e.target.value)}
+          onKeyDown={handleEnterSearch}
+          className="modal-input"
+        />
+        <input
+          placeholder="Web Server (Nginx, Apache...)"
+          value={webServer}
+          onChange={(e) => setWebServer(e.target.value)}
+          onKeyDown={handleEnterSearch}
+          className="modal-input"
+        />
+        <input
+          placeholder="Operating System"
+          value={os}
+          onChange={(e) => setOs(e.target.value)}
+          onKeyDown={handleEnterSearch}
+          className="modal-input"
+        />
+        <input
+          type="number"
+          placeholder="Min Bounty"
+          value={minBounty}
+          onChange={(e) => setMinBounty(e.target.value)}
+          onKeyDown={handleEnterSearch}
+          className="modal-input"
+        />
+        <input
+          type="number"
+          placeholder="Max Bounty"
+          value={maxBounty}
+          onChange={(e) => setMaxBounty(e.target.value)}
+          onKeyDown={handleEnterSearch}
+          className="modal-input"
+        />
+      </div>
+
+      <div className="modal-actions">
+        <button
+          className="modal-btn-clear"
+          onClick={() => {
+            setSearch("");
+            setFrontend("");
+            setBackend("");
+            setDatabase("");
+            setWebServer("");
+            setOs("");
+            setMinBounty("");
+            setMaxBounty("");
+            loadProjects();
+          }}
+        >
+          Clear Filters
+        </button>
+        <button
+          className="modal-btn-apply"
+          onClick={() => {
+            setShowAdvanced(false);
+            searchProjects();
+          }}
+        >
+          Apply Filters
+        </button>
+      </div>
+    </div>
   </div>
 )}
-
 
   <span><button
     onClick={searchProjects}
     style={{
-      padding: "10px 16px",
+      padding: "8px 16px",
       background: "#00c950",
+      color: "black",
+      fontWeight: "bold",
+      fontSize: "15px",
       border: "none",
       borderRadius: "6px",
       cursor: "pointer",
       width:"200px",
-      hover:"hsl(144, 78%, 76%)"
+      height: "40px",
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center"
     }}
   >
     Search
