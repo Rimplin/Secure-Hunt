@@ -18,7 +18,7 @@ const CVESearch = () => {
     setCves([]);
 
     try {
-      const response = await axios.get(`http://localhost:5001/api/cves/${encodeURIComponent(product)}`);
+      const response = await axios.get(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/cves/${encodeURIComponent(product)}`);
       setCves(response.data.cves || []);
     } catch (err) {
       console.error('Error fetching CVEs:', err);
