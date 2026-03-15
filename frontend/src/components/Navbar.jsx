@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { useContext, useEffect, useRef, useState } from 'react'
-import { Bell } from 'lucide-react'
+import { Bell, Menu, X } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext_helper'
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Secure-Hunt-pic-black.png"
@@ -11,6 +11,7 @@ function Navbar(){
     const navigate = useNavigate();
     const notificationRef = useRef(null);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const notifications = Array.isArray(user?.notifications) ? user.notifications : [];
 
     useEffect(() => {
@@ -26,6 +27,15 @@ function Navbar(){
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
+    // Close menu when a link is clicked
+    const handleLinkClick = () => {
+        setIsMobileMenuOpen(false);
+    };
     
     return(
         <nav className= "navbar">
@@ -35,16 +45,22 @@ function Navbar(){
             <span className="website-name2">HUNT</span>
             </div>
 
-            <div className="nav-links">
-                <NavLink to="/" className={({isActive}) => isActive? "nav-active" : ""}>Home</NavLink>
-                <NavLink to="/browser" className={({isActive}) => isActive? "nav-active" : ""}>Browse Bounties</NavLink>
-                <NavLink to="/cves" className={({isActive}) => isActive? "nav-active" : ""}>CVE Search</NavLink>
-                <NavLink to="/discussion" className={({isActive}) => isActive? "nav-active" : ""}>Forum</NavLink>
-                <NavLink to="/report" className={({isActive}) => isActive? "nav-active" : ""}>Submit Report</NavLink>
-                {user && (user.role === "company" || user.role === "administrator") && (
-                    <NavLink to="/rate-reports" className={({isActive}) => isActive? "nav-active" : ""}>Reports</NavLink>
-                )}
-                <NavLink to="/recommendations" className={({isActive}) => isActive? "nav-active" : ""}>AI Recommendations</NavLink>
+            <button className="mobile-menu-btn" onClick={toggleMobileMenu}>
+                {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+
+            <div className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+                <div className="nav-links-desktop">
+                    <NavLink to="/" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>Home</NavLink>
+                    <NavLink to="/browser" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>Browse Bounties</NavLink>
+                    <NavLink to="/cves" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>CVE Search</NavLink>
+                    <NavLink to="/discussion" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>Forum</NavLink>
+                    <NavLink to="/report" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>Submit Report</NavLink>
+                    {user && (user.role === "company" || user.role === "administrator") && (
+                        <NavLink to="/rate-reports" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>Reports</NavLink>
+                    )}
+                    <NavLink to="/recommendations" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>AI Recommendations</NavLink>
+                </div>
                 <div className="nav-actions">
                     {user ? (
                         <span className={`role-badge ${user.role}`}>
@@ -107,12 +123,13 @@ function Navbar(){
                         onClick={async () => {
                             await logout();
                             navigate("/");
+                            handleLinkClick();
                           }}
                         >
                         Logout
                         </button>
                     ) : (
-                        <Link to="/login" className="signin-link">
+                        <Link to="/login" onClick={handleLinkClick} className="signin-link">
                             <button className="signin-btn">Sign In</button>
                         </Link>
                     )}

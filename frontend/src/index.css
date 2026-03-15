@@ -48,21 +48,26 @@ html, body, #root {
   gap:40px;
   align-items:center;
 }
+.nav-links-desktop{
+  display: flex;
+  gap:40px;
+  align-items:center;
+}
 .nav-actions{
   display: flex;
   align-items: center;
   gap: 12px;
 }
-.nav-links a, .nav-links .nav-active  {
+.nav-links a, .nav-links .nav-active, .nav-links-desktop a, .nav-links-desktop .nav-active  {
   color: white;
   text-decoration: none;
   font-weight: 500;
 }
-.nav-links .nav-active{
+.nav-links .nav-active, .nav-links-desktop .nav-active{
   color: hsl(144, 100%, 39%);
   
 }
-.nav-links a:hover{
+.nav-links a:hover, .nav-links-desktop a:hover{
   color:hsl(144, 100%, 39%);
 }
 .nav-left{
@@ -783,4 +788,144 @@ html, body, #root {
 
 .modal-btn-apply:hover {
   background: hsl(144, 100%, 35%);
+}
+
+.mobile-menu-btn {
+  display: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Mobile Responsiveness Rules                                                */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .nav-links {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 12px 20px;
+    flex-wrap: wrap;
+  }
+  
+  .website-name, .website-name2 {
+    font-size: 18px;
+  }
+  
+  .nav-logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Hamburger Menu Button */
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 24px;
+  }
+
+  .nav-links.mobile-open {
+    display: flex;
+  }
+
+  .nav-links-desktop {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 24px;
+  }
+
+  .nav-actions {
+    flex-wrap: wrap;
+    width: 100%;
+    margin-top: 16px;
+    justify-content: flex-start;
+  }
+
+  /* Typography Adjustments */
+  .big-text {
+    font-size: 40px;
+    margin-top: 60px;
+    padding: 0 16px;
+  }
+
+  .buttons {
+    margin: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .button1, .button2 {
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+  .about {
+    margin: 20px 0;
+  }
+
+  .page2 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .projects {
+    grid-template-columns: 1fr;
+  }
+
+  /* Fix cve page layout for mobile */
+  .cve-page {
+    padding: 20px 10px;
+  }
+  .cve-title {
+    font-size: 32px;
+  }
+  .cve-search-form {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .cve-search-input {
+    border-radius: 12px;
+  }
+  .cve-search-button {
+    position: relative;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    width: 100%;
+    height: 50px;
+  }
+  .cve-card-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .cve-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 }
