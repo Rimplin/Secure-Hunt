@@ -366,6 +366,12 @@ html, body, #root {
   margin-bottom: 12px;
   color:hsl(0, 0%, 71%)
 }
+.proj-description{
+  color:hsl(0,0%,70%);
+  font-size:14px;
+  margin:6px 0 12px 0;
+  line-height:1.4;
+}
 
 .viewDetails-button{
   background-color: hsl(0, 94%, 26%);
@@ -928,4 +934,40 @@ html, body, #root {
     align-items: flex-start;
     gap: 12px;
   }
+}
+
+/*Search */
+@media (max-width:768px){
+
+  .search-row{
+    flex-direction:column;
+  }
+
+  .search-button,
+  .adv-search-button{
+    width:100%;
+  }
+
+}
+
+.search-row{
+  margin-left: 10px;
+  display:flex;
+  gap:5px;
+  width:100%;
+}
+
+.search-input{
+  flex:1;
+  min-width:0;
+}
+
+.search-button,
+.adv-search-button{
+  width:180px;
+  text-align:center;
+}
+.search-row input{
+  width:100%;
+  box-sizing:border-box;
 }

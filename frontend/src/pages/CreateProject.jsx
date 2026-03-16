@@ -119,13 +119,13 @@ function CreateProject() {
 
         <div className="fRow">
           <label>Web Server:</label>
-          <input name="webServerType" placeholder="Type" value={form.webServerType} onChange={handleChange} />
+          <input name="webServerType" placeholder="Type (Nginx)" value={form.webServerType} onChange={handleChange} />
           <input name="webServerVersion" placeholder="Version" value={form.webServerVersion} onChange={handleChange} />
         </div>
 
         <div className="fRow">
           <label>OS:</label>
-          <input name="osType" placeholder="Type" value={form.osType} onChange={handleChange} />
+          <input name="osType" placeholder="Type (Ubuntu)" value={form.osType} onChange={handleChange} />
           <input name="osVersion" placeholder="Version" value={form.osVersion} onChange={handleChange} />
         </div>
 

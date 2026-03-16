@@ -47,21 +47,28 @@ function ProjectDetails() {
   ];
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Project Details</h1>
+    <div style={{ padding: "40px"}}>
+      <h3
+          style={{ fontSize: "35px", fontWeight: "1000", marginBottom:"50px", marginLeft: "20px" }}
+          className="active-bounties"
+        >
+          <span style={{ color: "white" }}> PROJECT </span>
+          <span style={{ color: "#00c950" }}> DETAILS</span>
+        </h3>
+      
 
       <div className="proj-card" style={{ maxWidth: "800px" }}>
-        <h3 style={{ marginBottom: "10px" }}>{project.name}</h3>
+        <h2 style={{ marginBottom: "10px"}}>{project.name}</h2>
         <div className="bounty-badge" style={{ marginBottom: "18px" }}>
           {project.bounty}
         </div>
 
-        <h3 style={{ marginTop: "10px" }}>Description</h3>
+        <h3 style={{ marginTop: "10px" }}>Description:</h3>
         <p style={{ color: "hsl(0, 0%, 71%)", lineHeight: "1.6" }}>
           {project.description}
         </p>
 
-        <h3 style={{ marginTop: "24px" }}>Technology Stack</h3>
+        <h3 style={{ marginTop: "24px" }}>Technology Stack:</h3>
 
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>

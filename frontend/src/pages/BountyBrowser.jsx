@@ -83,8 +83,9 @@ const searchProjects = () => {
         Discover projects and get paid for securing the ecosystem.
       </p>
 
-      <div style={{ margin: "20px 40px" }}>
+      <div className="search-row">
       <input
+      className="search-input"
         type="text"
         placeholder="Search projects by keyword..."
         value={search}
@@ -103,7 +104,6 @@ const searchProjects = () => {
       }}
       style={{
       padding: "10px",
-      width: "800px",
       marginRight: "10px",
       marginBottom: "30px",
       borderRadius: "6px",
@@ -113,6 +113,7 @@ const searchProjects = () => {
     }}
   />
   <button
+  className="adv-search-button"
   onClick={() => setShowAdvanced(!showAdvanced)}
   style={{
     padding: "8px 16px",
@@ -226,7 +227,8 @@ const searchProjects = () => {
   </div>
 )}
 
-  <span><button
+  <button
+  className="search-button"
     onClick={searchProjects}
     style={{
       padding: "8px 16px",
@@ -237,15 +239,15 @@ const searchProjects = () => {
       border: "none",
       borderRadius: "6px",
       cursor: "pointer",
-      width:"200px",
       height: "40px",
       display: "inline-flex",
       alignItems: "center",
-      justifyContent: "center"
+      justifyContent: "center",
+      marginRight: "20px"
     }}
   >
     Search
-  </button></span>
+  </button>
   
 </div>
 
@@ -254,6 +256,11 @@ const searchProjects = () => {
         {Array.isArray(projects) && projects.map((proj) => (
           <div className="proj-card" key={proj._id}>
             <h3>{proj.name}</h3>
+             <p className="proj-description">
+            {proj.description.length > 120
+            ? proj.description.substring(0,120) + "..."
+            : proj.description}
+            </p>
             <div className="bounty-badge">
               {proj.bounty.startsWith("$")? proj.bounty: `$${proj.bounty}`}
               </div>

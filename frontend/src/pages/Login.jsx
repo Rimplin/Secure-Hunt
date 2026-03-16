@@ -93,9 +93,6 @@ function Login() {
           <p><a href="#forgot">Forgot password?</a></p>
         </div>
 
-        <div className="feature-notice">
-          <p>🚀 Full authentication coming in next Sprint probably</p>
-        </div>
       </div>
     </div>
   )
