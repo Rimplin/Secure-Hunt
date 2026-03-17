@@ -105,6 +105,10 @@ export default function ReportRating() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.message)
       setReports((prev) => prev.map((r) => (r._id === id ? { ...r, status } : r)))
+
+      if (status === 'accepted') {
+        alert(data.message);
+      }
     } catch (err) {
       alert('Error updating status: ' + err.message)
     } finally {

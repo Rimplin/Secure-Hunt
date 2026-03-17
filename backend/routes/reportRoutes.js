@@ -3,8 +3,12 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const { GridFSBucket } = require("mongodb");
 const Report = require("../models/Report");
+const Project = require("../models/Project");
 const upload = require("../config/gridfs");
 const { protect, authorize } = require("../middleware/authMiddleware");
+
+// Initialize Stripe
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // @route   POST /api/reports
 // @desc    Submit a report with optional file attachments (hunters only)
@@ -105,7 +109,7 @@ router.get("/:id", protect, async (req, res) => {
 });
 
 // @route   PUT /api/reports/:id/status
-// @desc    Update report status
+// @desc    Update report status and release escrow via Stripe if accepted
 // @access  Private (company/admin only)
 router.put("/:id/status", protect, authorize("company", "administrator"), async (req, res) => {
   try {
@@ -121,10 +125,44 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
       return res.status(404).json({ message: "Report not found" });
     }
 
+    let payoutMessage = "";
+
+    // Trigger Stripe dummy payout if status is being set to "accepted"
+    if (status === "accepted" && report.status !== "accepted") {
+      const project = await Project.findById(report.projectId);
+      if (project && project.bounty) {
+        // Parse the bounty amount (e.g., "$1,500" -> 1500)
+        const bountyStr = project.bounty.replace(/[^0-9.]/g, '');
+        const amountNum = parseFloat(bountyStr);
+        
+        if (!isNaN(amountNum) && amountNum > 0) {
+          const amountInCents = Math.round(amountNum * 100);
+          try {
+            // Test transfer to a dummy Stripe Connected Account
+            const transfer = await stripe.transfers.create({
+              amount: amountInCents,
+              currency: "usd",
+              destination: "acct_1TBN6U5JTbG7xCmB", // Stripe connected account ID (testing in sandbox)
+              description: `Bounty payout for report: ${report.title}`
+            });
+            payoutMessage = " | Payout successful (transfer ID: " + transfer.id + ")";
+          } catch (stripeError) {
+            console.error("Stripe transfer via dummy test failed as expected:", stripeError.message);
+            // Append the error to the message to show stripe is working, but don't fail the request
+            payoutMessage = ` | Stripe dummy payout attempted (Error from Stripe API: ${stripeError.message})`;
+          }
+        } else {
+           payoutMessage = " | Warning: Could not parse a valid numerical bounty amount for payout.";
+        }
+      } else {
+         payoutMessage = " | Warning: Could not find project to determine bounty amount.";
+      }
+    }
+
     report.status = status;
     const updated = await report.save();
 
-    res.json({ message: `Status updated to "${status}"`, report: updated });
+    res.json({ message: `Status updated to "${status}"${payoutMessage}`, report: updated });
   } catch (error) {
     console.error("Error updating status:", error);
     res.status(500).json({ message: "Server error", error: error.message });
