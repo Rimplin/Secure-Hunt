@@ -12,28 +12,30 @@ import AIRecommendations from './pages/AIRecommendations.jsx'
 import Discussion from './pages/Discussion.jsx'
 import CreateProject from './pages/CreateProject.jsx'
 import CVESearch from './pages/CVESearch.jsx'
+import DeveloperProfile from './pages/DeveloperProfile.jsx'
 
-function App() { 
-   return(
-      <div className="app-container">
-      <Navbar/>
+function App() {
+  return (
+    <div className="app-container">
+      <Navbar />
       <Routes>
-        <Route path="/" element={<HomePage/>} />
-        <Route path="/browser" element={<BountyBrowser/>}/>
-        <Route path="/projects/:id" element={<ProjectDetails />}/>
-        <Route path="/cves" element={<CVESearch />}/>
-        <Route path="/login" element={<Login/>}/>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/browser" element={<BountyBrowser />} />
+        <Route path="/projects/:id" element={<ProjectDetails />} />
+        <Route path="/cves" element={<CVESearch />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/report" element={<ReportSubmission/>}/>
-        <Route path="/rate-reports" element={<ReportRating/>}/>
-        <Route path="/recommendations" element={<AIRecommendations/>}/>
-        <Route path="/discussion" element={<Discussion/>}/>
+        <Route path="/report" element={<ReportSubmission />} />
+        <Route path="/rate-reports" element={<ReportRating />} />
+        <Route path="/recommendations" element={<AIRecommendations />} />
+        <Route path="/discussion" element={<Discussion />} />
         <Route path="/create" element={<CreateProject />} />
+        <Route path="/profile" element={<DeveloperProfile />} />
       </Routes>
-      
-      <Footer/>
-      </div>
-    
+
+      <Footer />
+    </div>
+
   );
 }
 

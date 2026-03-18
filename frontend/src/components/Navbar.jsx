@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext_helper'
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Secure-Hunt-pic-black.png"
 
-function Navbar(){
+function Navbar() {
     const {
         user,
         logout,
@@ -77,13 +77,13 @@ function Navbar(){
     const handleLinkClick = () => {
         setIsMobileMenuOpen(false);
     };
-    
-    return(
-        <nav className= "navbar">
+
+    return (
+        <nav className="navbar">
             <div className="nav-left">
-            <img src={logo} alt="Secure Hunt Logo" className="nav-logo" />
-            <span className="website-name">SECURE</span>
-            <span className="website-name2">HUNT</span>
+                <img src={logo} alt="Secure Hunt Logo" className="nav-logo" />
+                <span className="website-name">SECURE</span>
+                <span className="website-name2">HUNT</span>
             </div>
 
             <button className="mobile-menu-btn" onClick={toggleMobileMenu}>
@@ -92,36 +92,39 @@ function Navbar(){
 
             <div className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
                 <div className="nav-links-desktop">
-                    <NavLink to="/" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>Home</NavLink>
-                    <NavLink to="/browser" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>Browse Bounties</NavLink>
-                    <NavLink to="/cves" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>CVE Search</NavLink>
-                    <NavLink to="/discussion" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>Forum</NavLink>
-                    <NavLink to="/report" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>Submit Report</NavLink>
+                    <NavLink to="/" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Home</NavLink>
+                    <NavLink to="/browser" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Browse Bounties</NavLink>
+                    <NavLink to="/cves" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>CVE Search</NavLink>
+                    <NavLink to="/discussion" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Forum</NavLink>
+                    <NavLink to="/report" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Submit Report</NavLink>
                     {user && (user.role === "company" || user.role === "administrator") && (
-                        <NavLink to="/rate-reports" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>Reports</NavLink>
+                        <NavLink to="/rate-reports" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Reports</NavLink>
                     )}
-                    <NavLink to="/recommendations" onClick={handleLinkClick} className={({isActive}) => isActive? "nav-active" : ""}>AI Recommendations</NavLink>
+                    <NavLink to="/recommendations" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>AI Recommendations</NavLink>
+                    {user && (
+                        <NavLink to="/profile" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Profile</NavLink>
+                    )}
                 </div>
                 <div className="nav-actions">
                     {user ? (
                         <span className={`role-badge ${user.role}`}>
-                        {user.role.toUpperCase()}
+                            {user.role.toUpperCase()}
                         </span>
                     ) : null}
 
                     <div className="notification-wrapper" ref={notificationRef}>
                         <button
-                        type="button"
-                        className={`notification-btn ${showNotifications ? "active" : ""}`}
-                        aria-label="Open notifications"
-                        aria-haspopup="dialog"
-                        aria-expanded={showNotifications}
-                        onClick={handleToggleNotifications}
+                            type="button"
+                            className={`notification-btn ${showNotifications ? "active" : ""}`}
+                            aria-label="Open notifications"
+                            aria-haspopup="dialog"
+                            aria-expanded={showNotifications}
+                            onClick={handleToggleNotifications}
                         >
-                        <Bell size={18} strokeWidth={2.2} />
-                        {!showNotifications && unreadCount > 0 && (
-                            <span className="notification-count">{unreadCount}</span>
-                        )}
+                            <Bell size={18} strokeWidth={2.2} />
+                            {!showNotifications && unreadCount > 0 && (
+                                <span className="notification-count">{unreadCount}</span>
+                            )}
                         </button>
 
                         {showNotifications && (
@@ -129,12 +132,12 @@ function Navbar(){
                                 <div className="notification-header">
                                     <span>Notifications</span>
                                     <button
-                                    type="button"
-                                    className="notification-clear-btn"
-                                    onClick={handleClearNotifications}
-                                    disabled={isNotificationActionLoading || notifications.length === 0}
+                                        type="button"
+                                        className="notification-clear-btn"
+                                        onClick={handleClearNotifications}
+                                        disabled={isNotificationActionLoading || notifications.length === 0}
                                     >
-                                    Clear all
+                                        Clear all
                                     </button>
                                 </div>
                                 <div className="notification-body">
@@ -161,14 +164,14 @@ function Navbar(){
                                                 <div key={notificationKey} className="notification-item">
                                                     {notificationId && (
                                                         <button
-                                                        type="button"
-                                                        className="notification-remove-btn"
-                                                        aria-label="Remove notification"
-                                                        title="Remove notification"
-                                                        disabled={isNotificationActionLoading}
-                                                        onClick={() => handleRemoveNotification(notificationId)}
+                                                            type="button"
+                                                            className="notification-remove-btn"
+                                                            aria-label="Remove notification"
+                                                            title="Remove notification"
+                                                            disabled={isNotificationActionLoading}
+                                                            onClick={() => handleRemoveNotification(notificationId)}
                                                         >
-                                                        <X size={14} />
+                                                            <X size={14} />
                                                         </button>
                                                     )}
                                                     <p className="notification-title">{title}</p>
@@ -191,14 +194,14 @@ function Navbar(){
 
                     {user ? (
                         <button
-                        className="signin-btn"
-                        onClick={async () => {
-                            await logout();
-                            navigate("/");
-                            handleLinkClick();
-                          }}
+                            className="signin-btn"
+                            onClick={async () => {
+                                await logout();
+                                navigate("/");
+                                handleLinkClick();
+                            }}
                         >
-                        Logout
+                            Logout
                         </button>
                     ) : (
                         <Link to="/login" onClick={handleLinkClick} className="signin-link">
