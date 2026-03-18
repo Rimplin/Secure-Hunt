@@ -5,6 +5,7 @@ import { AuthContext } from "./AuthContext_helper";
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const BASE = import.meta.env.VITE_REACT_APP_BACKEND_BASEURL;
 
   const loadCurrentUser = useCallback(async ({ showLoading = false } = {}) => {
     if (showLoading) {
@@ -13,7 +14,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/auth/me`,
+        `${BASE}/api/auth/me`,
         {
           credentials: "include",
         }
@@ -36,7 +37,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     }
-  }, []);
+  }, [BASE]);
 
   useEffect(() => {
     loadCurrentUser({ showLoading: true });
@@ -48,7 +49,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     await fetch(
-      `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/auth/logout`,
+      `${BASE}/api/auth/logout`,
       {
         method: "POST",
         credentials: "include",
@@ -57,8 +58,61 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const markNotificationsAsRead = async () => {
+    const res = await fetch(`${BASE}/api/auth/notifications/read-all`, {
+      method: "PUT",
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      await loadCurrentUser();
+      return true;
+    }
+
+    return false;
+  };
+
+  const clearNotifications = async () => {
+    const res = await fetch(`${BASE}/api/auth/notifications`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      await loadCurrentUser();
+      return true;
+    }
+
+    return false;
+  };
+
+  const removeNotification = async (notificationId) => {
+    const res = await fetch(`${BASE}/api/auth/notifications/${notificationId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (res.ok) {
+      await loadCurrentUser();
+      return true;
+    }
+
+    return false;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, logout, refreshUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        loading,
+        logout,
+        refreshUser,
+        markNotificationsAsRead,
+        clearNotifications,
+        removeNotification,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

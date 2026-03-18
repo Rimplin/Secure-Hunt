@@ -139,7 +139,26 @@ html, body, #root {
 .notification-header{
   padding: 14px 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-weight: 700;
+}
+.notification-clear-btn{
+  border: none;
+  background: transparent;
+  color: #00c950;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+.notification-clear-btn:hover{
+  color: hsl(144, 100%, 32%);
+}
+.notification-clear-btn:disabled{
+  color: hsl(0, 0%, 45%);
+  cursor: not-allowed;
 }
 .notification-body{
   max-height: 300px;
@@ -151,6 +170,28 @@ html, body, #root {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   padding: 12px;
+  padding-right: 34px;
+  position: relative;
+}
+.notification-remove-btn{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: transparent;
+  color: hsl(0, 0%, 71%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 2px;
+}
+.notification-remove-btn:hover{
+  color: #00c950;
+}
+.notification-remove-btn:disabled{
+  color: hsl(0, 0%, 45%);
+  cursor: not-allowed;
 }
 .notification-item + .notification-item{
   margin-top: 8px;

@@ -7,19 +7,52 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/Secure-Hunt-pic-black.png"
 
 function Navbar(){
-    const { user, logout, refreshUser } = useContext(AuthContext);
+    const {
+        user,
+        logout,
+        refreshUser,
+        markNotificationsAsRead,
+        clearNotifications,
+        removeNotification,
+    } = useContext(AuthContext);
     const navigate = useNavigate();
     const notificationRef = useRef(null);
     const [showNotifications, setShowNotifications] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isNotificationActionLoading, setIsNotificationActionLoading] = useState(false);
     const notifications = Array.isArray(user?.notifications) ? user.notifications : [];
+    const unreadCount = notifications.filter((notification) => !notification?.isRead).length;
 
     const handleToggleNotifications = async () => {
-        if (!showNotifications && user) {
+        const opening = !showNotifications;
+        setShowNotifications(opening);
+
+        if (opening && user) {
+            setIsNotificationActionLoading(true);
             await refreshUser();
+            await markNotificationsAsRead();
+            setIsNotificationActionLoading(false);
+        }
+    };
+
+    const handleClearNotifications = async () => {
+        if (!user || notifications.length === 0) {
+            return;
         }
 
-        setShowNotifications((prev) => !prev);
+        setIsNotificationActionLoading(true);
+        await clearNotifications();
+        setIsNotificationActionLoading(false);
+    };
+
+    const handleRemoveNotification = async (notificationId) => {
+        if (!notificationId) {
+            return;
+        }
+
+        setIsNotificationActionLoading(true);
+        await removeNotification(notificationId);
+        setIsNotificationActionLoading(false);
     };
 
     useEffect(() => {
@@ -86,14 +119,24 @@ function Navbar(){
                         onClick={handleToggleNotifications}
                         >
                         <Bell size={18} strokeWidth={2.2} />
-                        {notifications.length > 0 && (
-                            <span className="notification-count">{notifications.length}</span>
+                        {!showNotifications && unreadCount > 0 && (
+                            <span className="notification-count">{unreadCount}</span>
                         )}
                         </button>
 
                         {showNotifications && (
                             <div className="notification-popout" role="dialog" aria-label="Notifications panel">
-                                <div className="notification-header">Notifications</div>
+                                <div className="notification-header">
+                                    <span>Notifications</span>
+                                    <button
+                                    type="button"
+                                    className="notification-clear-btn"
+                                    onClick={handleClearNotifications}
+                                    disabled={isNotificationActionLoading || notifications.length === 0}
+                                    >
+                                    Clear all
+                                    </button>
+                                </div>
                                 <div className="notification-body">
                                     {notifications.length > 0 ? (
                                         notifications.map((notification, index) => {
@@ -104,8 +147,11 @@ function Navbar(){
                                             const message = isObjectNotification && notification.message && notification.message !== title
                                                 ? notification.message
                                                 : "";
+                                            const notificationId = isObjectNotification
+                                                ? notification._id || notification.id
+                                                : null;
                                             const notificationKey = isObjectNotification
-                                                ? notification.id || notification._id || `${title}-${index}`
+                                                ? notificationId || `${title}-${index}`
                                                 : `${title}-${index}`;
                                             const createdAt = isObjectNotification && notification.createdAt
                                                 ? new Date(notification.createdAt).toLocaleString()
@@ -113,6 +159,18 @@ function Navbar(){
 
                                             return (
                                                 <div key={notificationKey} className="notification-item">
+                                                    {notificationId && (
+                                                        <button
+                                                        type="button"
+                                                        className="notification-remove-btn"
+                                                        aria-label="Remove notification"
+                                                        title="Remove notification"
+                                                        disabled={isNotificationActionLoading}
+                                                        onClick={() => handleRemoveNotification(notificationId)}
+                                                        >
+                                                        <X size={14} />
+                                                        </button>
+                                                    )}
                                                     <p className="notification-title">{title}</p>
                                                     {message && (
                                                         <p className="notification-message">{message}</p>

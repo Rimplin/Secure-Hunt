@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
@@ -85,6 +86,80 @@ router.post("/logout", (req, res) => {
   });
 
   res.json({ message: "Logged out" });
+});
+
+// MARK ALL NOTIFICATIONS AS READ
+router.put("/notifications/read-all", protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!Array.isArray(user.notifications) || user.notifications.length === 0) {
+      return res.json({ message: "Notifications marked as read" });
+    }
+
+    user.notifications.forEach((notification) => {
+      notification.isRead = true;
+    });
+
+    await user.save();
+
+    res.json({ message: "Notifications marked as read" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// CLEAR ALL NOTIFICATIONS
+router.delete("/notifications", protect, async (req, res) => {
+  try {
+    await User.updateOne(
+      { _id: req.user._id },
+      {
+        $set: {
+          notifications: [],
+        },
+      }
+    );
+
+    res.json({ message: "Notifications cleared" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// DELETE A SINGLE NOTIFICATION
+router.delete("/notifications/:notificationId", protect, async (req, res) => {
+  try {
+    const { notificationId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(notificationId)) {
+      return res.status(400).json({ message: "Invalid notification ID" });
+    }
+
+    const result = await User.updateOne(
+      { _id: req.user._id },
+      {
+        $pull: {
+          notifications: { _id: notificationId },
+        },
+      }
+    );
+
+    if (!result.matchedCount) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!result.modifiedCount) {
+      return res.status(404).json({ message: "Notification not found" });
+    }
+
+    res.json({ message: "Notification removed" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 // GET CURRENT USER
