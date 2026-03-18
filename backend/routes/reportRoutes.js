@@ -178,8 +178,8 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
         isRead: false,
       };
 
-      const notificationWrite = await User.updateOne(
-        { _id: report.submittedBy },
+      const notificationWrite = await User.collection.updateOne(
+        { _id: new mongoose.Types.ObjectId(report.submittedBy) },
         {
           $push: {
             notifications: {
@@ -191,10 +191,11 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
         }
       );
 
-      if (!notificationWrite.matchedCount) {
+      if (!notificationWrite.matchedCount || !notificationWrite.modifiedCount) {
         return res.status(500).json({
           message: `Status updated to "${status}" but failed to notify the report submitter.`,
           report: updated,
+          notificationDelivered: false,
         });
       }
 
