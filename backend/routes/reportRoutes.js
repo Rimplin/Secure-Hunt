@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const { GridFSBucket } = require("mongodb");
 const Report = require("../models/Report");
 const Project = require("../models/Project");
+const User = require("../models/User");
 const upload = require("../config/gridfs");
 const { protect, authorize } = require("../middleware/authMiddleware");
 
@@ -125,6 +126,8 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
       return res.status(404).json({ message: "Report not found" });
     }
 
+    const previousStatus = report.status;
+
     let payoutMessage = "";
 
     // Trigger Stripe dummy payout if status is being set to "accepted"
@@ -161,6 +164,32 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
 
     report.status = status;
     const updated = await report.save();
+
+    if (previousStatus !== status && report.submittedBy) {
+      const readableStatus = status.charAt(0).toUpperCase() + status.slice(1);
+      const notificationPayload = {
+        type: "report-status",
+        title: "Report status updated",
+        message: `Your report "${report.title}" is now ${readableStatus}.`,
+        reportId: report._id,
+        status,
+        isRead: false,
+      };
+
+      try {
+        await User.findByIdAndUpdate(report.submittedBy, {
+          $push: {
+            notifications: {
+              $each: [notificationPayload],
+              $position: 0,
+              $slice: 50,
+            },
+          },
+        });
+      } catch (notificationError) {
+        console.error("Failed to write report status notification:", notificationError);
+      }
+    }
 
     res.json({ message: `Status updated to "${status}"${payoutMessage}`, report: updated });
   } catch (error) {

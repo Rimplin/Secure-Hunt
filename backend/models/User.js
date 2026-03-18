@@ -1,5 +1,24 @@
 const mongoose = require("mongoose");
 
+const notificationSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: ["report-status"],
+      default: "report-status",
+    },
+    title: { type: String, required: true },
+    message: { type: String, required: true },
+    reportId: { type: mongoose.Schema.Types.ObjectId, ref: "Report" },
+    status: {
+      type: String,
+      enum: ["pending", "reviewed", "accepted", "rejected"],
+    },
+    isRead: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
+
 const userSchema = new mongoose.Schema(
   {
     email: { type: String, required: true, unique: true },
@@ -14,6 +33,7 @@ const userSchema = new mongoose.Schema(
 
     isVerified: { type: Boolean, default: false },
     verificationToken: String,
+    notifications: { type: [notificationSchema], default: [] },
   },
   { timestamps: true }
 );

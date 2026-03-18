@@ -7,12 +7,20 @@ import { useNavigate } from "react-router-dom";
 import logo from "../assets/Secure-Hunt-pic-black.png"
 
 function Navbar(){
-    const { user, logout } = useContext(AuthContext);
+    const { user, logout, refreshUser } = useContext(AuthContext);
     const navigate = useNavigate();
     const notificationRef = useRef(null);
     const [showNotifications, setShowNotifications] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const notifications = Array.isArray(user?.notifications) ? user.notifications : [];
+
+    const handleToggleNotifications = async () => {
+        if (!showNotifications && user) {
+            await refreshUser();
+        }
+
+        setShowNotifications((prev) => !prev);
+    };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -75,7 +83,7 @@ function Navbar(){
                         aria-label="Open notifications"
                         aria-haspopup="dialog"
                         aria-expanded={showNotifications}
-                        onClick={() => setShowNotifications((prev) => !prev)}
+                        onClick={handleToggleNotifications}
                         >
                         <Bell size={18} strokeWidth={2.2} />
                         {notifications.length > 0 && (
@@ -99,12 +107,18 @@ function Navbar(){
                                             const notificationKey = isObjectNotification
                                                 ? notification.id || notification._id || `${title}-${index}`
                                                 : `${title}-${index}`;
+                                            const createdAt = isObjectNotification && notification.createdAt
+                                                ? new Date(notification.createdAt).toLocaleString()
+                                                : "";
 
                                             return (
                                                 <div key={notificationKey} className="notification-item">
                                                     <p className="notification-title">{title}</p>
                                                     {message && (
                                                         <p className="notification-message">{message}</p>
+                                                    )}
+                                                    {createdAt && (
+                                                        <p className="notification-time">{createdAt}</p>
                                                     )}
                                                 </div>
                                             );
