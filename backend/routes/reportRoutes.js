@@ -165,6 +165,8 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
     report.status = status;
     const updated = await report.save();
 
+    let notificationDelivered = false;
+
     if (previousStatus !== status && report.submittedBy) {
       const readableStatus = status.charAt(0).toUpperCase() + status.slice(1);
       const notificationPayload = {
@@ -176,8 +178,9 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
         isRead: false,
       };
 
-      try {
-        await User.findByIdAndUpdate(report.submittedBy, {
+      const notificationWrite = await User.updateOne(
+        { _id: report.submittedBy },
+        {
           $push: {
             notifications: {
               $each: [notificationPayload],
@@ -185,13 +188,24 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
               $slice: 50,
             },
           },
+        }
+      );
+
+      if (!notificationWrite.matchedCount) {
+        return res.status(500).json({
+          message: `Status updated to "${status}" but failed to notify the report submitter.`,
+          report: updated,
         });
-      } catch (notificationError) {
-        console.error("Failed to write report status notification:", notificationError);
       }
+
+      notificationDelivered = true;
     }
 
-    res.json({ message: `Status updated to "${status}"${payoutMessage}`, report: updated });
+    res.json({
+      message: `Status updated to "${status}"${payoutMessage}`,
+      report: updated,
+      notificationDelivered,
+    });
   } catch (error) {
     console.error("Error updating status:", error);
     res.status(500).json({ message: "Server error", error: error.message });
