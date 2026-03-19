@@ -13,12 +13,22 @@ const SEVERITY_COLORS = {
     low: '#34c759',
 }
 
+const STATUS_COLORS = {
+    pending:  '#f59e0b',
+    reviewed: '#3b82f6', // sleek blue
+    accepted: '#34c759',
+    rejected: '#ff3b30',
+}
+
 export default function DeveloperProfile() {
     const { user, loading: authLoading } = useContext(AuthContext)
     const navigate = useNavigate()
     const [profile, setProfile] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+
+    const [filterStatus, setFilterStatus] = useState('all')
+    const [sortBy, setSortBy] = useState('newest')
 
     useEffect(() => {
         if (authLoading) return
@@ -28,6 +38,7 @@ export default function DeveloperProfile() {
             try {
                 const res = await fetch(`${BASE}/api/developers/${user._id}/profile`, {
                     credentials: 'include',
+                    cache: 'no-store',
                 })
                 if (!res.ok) {
                     const data = await res.json()
@@ -80,6 +91,19 @@ export default function DeveloperProfile() {
 
     if (!profile) return null
 
+    const displayReports = (profile.allReports || profile.acceptedReports || [])
+        .filter(r => filterStatus === 'all' || r.status === filterStatus)
+        .sort((a, b) => {
+            if (sortBy === 'newest') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            if (sortBy === 'oldest') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+            if (sortBy === 'highest_rating') return (b.rating || 0) - (a.rating || 0);
+            if (sortBy === 'severity') {
+                const sevWeight = { critical: 4, high: 3, medium: 2, low: 1 };
+                return (sevWeight[b.severity] || 0) - (sevWeight[a.severity] || 0);
+            }
+            return 0;
+        });
+
     return (
         <div className="dp-container">
             {/* Profile Header */}
@@ -102,8 +126,8 @@ export default function DeveloperProfile() {
                     <div className="dp-stat-icon dp-stat-icon-reports">
                         <FileText size={24} />
                     </div>
-                    <div className="dp-stat-num">{profile.acceptedReportsCount}</div>
-                    <div className="dp-stat-label">Accepted Reports</div>
+                    <div className="dp-stat-num">{profile.totalReportsCount || profile.acceptedReportsCount || 0}</div>
+                    <div className="dp-stat-label">Total Submissions</div>
                 </div>
 
                 <div className="dp-stat-card">
@@ -141,25 +165,52 @@ export default function DeveloperProfile() {
                 </div>
             </div>
 
-            {/* Accepted Reports Section */}
+            {/* All Submitted Reports */}
             <div className="dp-reports-section">
-                <h2 className="dp-section-title">
-                    <Shield size={20} />
-                    Accepted Reports
-                </h2>
+                <div className="dp-section-header">
+                    <h2 className="dp-section-title">
+                        <Shield size={20} />
+                        Submitted Reports
+                    </h2>
+                    
+                    <div className="dp-filters">
+                        <select 
+                            className="dp-select"
+                            value={filterStatus}
+                            onChange={(e) => setFilterStatus(e.target.value)}
+                        >
+                            <option value="all">All Statuses</option>
+                            <option value="pending">Pending</option>
+                            <option value="reviewed">Reviewed</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
 
-                {profile.acceptedReports.length === 0 ? (
+                        <select 
+                            className="dp-select"
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                        >
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="highest_rating">Highest Rated</option>
+                            <option value="severity">Highest Severity</option>
+                        </select>
+                    </div>
+                </div>
+
+                {displayReports.length === 0 ? (
                     <div className="dp-empty">
                         <FileText size={48} />
-                        <h3>No Accepted Reports Yet</h3>
-                        <p>Submit vulnerability reports to build your credibility.</p>
+                        <h3>No Reports Found</h3>
+                        <p>{filterStatus !== 'all' ? 'Try changing your status filter.' : 'Submit vulnerability reports to build your credibility.'}</p>
                         <button className="dp-submit-btn" onClick={() => navigate('/report')}>
                             Submit a Report
                         </button>
                     </div>
                 ) : (
                     <div className="dp-reports-grid">
-                        {profile.acceptedReports.map((report) => (
+                        {displayReports.map((report) => (
                             <div key={report._id} className="dp-report-card">
                                 <div className="dp-report-top">
                                     <div className="dp-report-title-wrap">
@@ -168,19 +219,27 @@ export default function DeveloperProfile() {
                                             📁 {report.projectId?.name || 'Unknown Project'}
                                         </p>
                                     </div>
-                                    <span
-                                        className="dp-severity-badge"
-                                        style={{ background: SEVERITY_COLORS[report.severity] }}
-                                    >
-                                        {report.severity}
-                                    </span>
+                                    <div className="dp-report-badges">
+                                        <span
+                                            className="dp-status-badge"
+                                            style={{ background: STATUS_COLORS[report.status] }}
+                                        >
+                                            {report.status}
+                                        </span>
+                                        <span
+                                            className="dp-severity-badge"
+                                            style={{ background: SEVERITY_COLORS[report.severity] }}
+                                        >
+                                            {report.severity}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <p className="dp-report-description">{report.description}</p>
 
                                 <div className="dp-report-footer">
                                     <div className="dp-report-rating">
-                                        {report.rating ? (
+                                        {report.status === 'accepted' && report.rating ? (
                                             <>
                                                 {[...Array(5)].map((_, i) => (
                                                     <Star
@@ -192,9 +251,9 @@ export default function DeveloperProfile() {
                                                 ))}
                                                 <span className="dp-rating-value">{report.rating}.0</span>
                                             </>
-                                        ) : (
+                                        ) : report.status === 'accepted' ? (
                                             <span className="dp-no-rating">Not rated yet</span>
-                                        )}
+                                        ) : null}
                                     </div>
 
                                     <div className="dp-report-date">
@@ -203,7 +262,7 @@ export default function DeveloperProfile() {
                                     </div>
                                 </div>
 
-                                {report.projectId?.bounty && (
+                                {report.projectId?.bounty && report.status === 'accepted' && (
                                     <div className="dp-bounty-tag">
                                         <span>{report.projectId.bounty}</span>
                                         <ChevronRight size={14} />

@@ -14,16 +14,19 @@ router.get("/:id/profile", async (req, res) => {
       return res.status(404).json({ message: "Developer not found" });
     }
 
-    // Find all accepted reports submitted by this developer
-    const acceptedReports = await Report.find({
+    // Find ALL reports submitted by this developer
+    const allReports = await Report.find({
       submittedBy: req.params.id,
-      status: "accepted",
     })
       .populate("projectId", "name bounty")
       .sort({ createdAt: -1 });
 
+    // Derive accepted subset for stats
+    const acceptedReports = allReports.filter((r) => r.status === "accepted");
+
     // Compute statistics
     const acceptedReportsCount = acceptedReports.length;
+    const totalReportsCount = allReports.length;
 
     const ratedReports = acceptedReports.filter(
       (r) => r.rating !== null && r.rating !== undefined
@@ -44,9 +47,11 @@ router.get("/:id/profile", async (req, res) => {
       email: developer.email,
       role: developer.role,
       acceptedReportsCount,
+      totalReportsCount,
       totalRatingPoints,
       averageRating,
       acceptedReports,
+      allReports,
     });
   } catch (err) {
     console.error("Error fetching developer profile:", err);
