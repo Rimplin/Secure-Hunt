@@ -91,8 +91,26 @@ function Navbar() {
             return;
         }
 
+        let normalizedNotificationId = notificationId;
+
+        if (typeof notificationId === "object") {
+            if (notificationId.$oid) {
+                normalizedNotificationId = notificationId.$oid;
+            } else if (typeof notificationId.toString === "function") {
+                normalizedNotificationId = notificationId.toString();
+            }
+        }
+
+        if (!normalizedNotificationId || normalizedNotificationId === "[object Object]") {
+            return;
+        }
+
         setIsNotificationActionLoading(true);
-        await removeNotification(notificationId);
+        const removed = await removeNotification(normalizedNotificationId);
+
+        if (!removed) {
+            await refreshUser();
+        }
         setIsNotificationActionLoading(false);
     };
 
@@ -111,7 +129,7 @@ function Navbar() {
     }, []);
 
     const toggleMobileMenu = () => {
-        setIsMobileMenuOpen(!isMobileMenuOpen);
+        setIsMobileMenuOpen((prev) => !prev);
     };
 
     // Close menu when a link is clicked
@@ -127,7 +145,13 @@ function Navbar() {
                 <span className="website-name2">HUNT</span>
             </div>
 
-            <button className="mobile-menu-btn" onClick={toggleMobileMenu}>
+            <button
+                type="button"
+                className="mobile-menu-btn"
+                onClick={toggleMobileMenu}
+                aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                aria-expanded={isMobileMenuOpen}
+            >
                 {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
 
@@ -210,7 +234,10 @@ function Navbar() {
                                                             aria-label="Remove notification"
                                                             title="Remove notification"
                                                             disabled={isNotificationActionLoading}
-                                                            onClick={() => handleRemoveNotification(notificationId)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleRemoveNotification(notificationId);
+                                                            }}
                                                         >
                                                             <X size={14} />
                                                         </button>

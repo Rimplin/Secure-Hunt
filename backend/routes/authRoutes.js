@@ -135,18 +135,30 @@ router.delete("/notifications/:notificationId", protect, async (req, res) => {
   try {
     const { notificationId } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(notificationId)) {
-      return res.status(400).json({ message: "Invalid notification ID" });
+    if (!notificationId) {
+      return res.status(400).json({ message: "Notification ID is required" });
     }
 
-    const result = await User.updateOne(
+    let result = await User.updateOne(
       { _id: req.user._id },
       {
         $pull: {
-          notifications: { _id: notificationId },
+          notifications: { id: notificationId },
         },
       }
     );
+
+    // Fallback to subdocument _id removal for ObjectId-based notifications.
+    if (!result.modifiedCount && mongoose.Types.ObjectId.isValid(notificationId)) {
+      result = await User.updateOne(
+        { _id: req.user._id },
+        {
+          $pull: {
+            notifications: { _id: new mongoose.Types.ObjectId(notificationId) },
+          },
+        }
+      );
+    }
 
     if (!result.matchedCount) {
       return res.status(404).json({ message: "User not found" });
