@@ -169,7 +169,10 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
 
     if (previousStatus !== status && report.submittedBy) {
       const readableStatus = status.charAt(0).toUpperCase() + status.slice(1);
+      const notificationId = new mongoose.Types.ObjectId();
       const notificationPayload = {
+        _id: notificationId,
+        id: notificationId.toString(),
         type: "report-status",
         title: "Report status updated",
         message: `Your report "${report.title}" is now ${readableStatus}.`,

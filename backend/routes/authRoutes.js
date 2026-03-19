@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
@@ -134,27 +133,48 @@ router.delete("/notifications", protect, async (req, res) => {
 router.delete("/notifications/:notificationId", protect, async (req, res) => {
   try {
     const { notificationId } = req.params;
+    const targetId = String(notificationId || "").trim();
 
-    if (!mongoose.Types.ObjectId.isValid(notificationId)) {
-      return res.status(400).json({ message: "Invalid notification ID" });
+    if (!targetId) {
+      return res.status(400).json({ message: "Notification ID is required" });
     }
 
-    const result = await User.updateOne(
-      { _id: req.user._id },
-      {
-        $pull: {
-          notifications: { _id: notificationId },
-        },
-      }
-    );
+    const user = await User.findById(req.user._id);
 
-    if (!result.matchedCount) {
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (!result.modifiedCount) {
+    if (!Array.isArray(user.notifications) || user.notifications.length === 0) {
       return res.status(404).json({ message: "Notification not found" });
     }
+
+    const originalCount = user.notifications.length;
+    user.notifications = user.notifications.filter((notification) => {
+      const candidates = new Set();
+
+      if (notification && notification.id != null) {
+        candidates.add(String(notification.id));
+      }
+
+      if (notification && notification._id != null) {
+        if (typeof notification._id === "string") {
+          candidates.add(notification._id);
+        } else if (typeof notification._id.toString === "function") {
+          candidates.add(notification._id.toString());
+        } else if (typeof notification._id === "object" && notification._id.$oid) {
+          candidates.add(String(notification._id.$oid));
+        }
+      }
+
+      return !candidates.has(targetId);
+    });
+
+    if (user.notifications.length === originalCount) {
+      return res.status(404).json({ message: "Notification not found" });
+    }
+
+    await user.save();
 
     res.json({ message: "Notification removed" });
   } catch (err) {
