@@ -20,17 +20,58 @@ function Navbar() {
     const [showNotifications, setShowNotifications] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isNotificationActionLoading, setIsNotificationActionLoading] = useState(false);
+    const [lastViewedTimestamp, setLastViewedTimestamp] = useState(null);
     const notifications = Array.isArray(user?.notifications) ? user.notifications : [];
-    const unreadCount = notifications.filter((notification) => !notification?.isRead).length;
+    const notificationViewedStorageKey = user?.email
+        ? `notifications:lastViewed:${user.email}`
+        : null;
+
+    useEffect(() => {
+        if (!notificationViewedStorageKey) {
+            setLastViewedTimestamp(null);
+            return;
+        }
+
+        const saved = window.localStorage.getItem(notificationViewedStorageKey);
+        setLastViewedTimestamp(saved ? Number(saved) : null);
+    }, [notificationViewedStorageKey]);
+
+    const unreadCount = notifications.filter((notification) => {
+        if (notification?.isRead) {
+            return false;
+        }
+
+        if (!lastViewedTimestamp) {
+            return true;
+        }
+
+        if (!notification?.createdAt) {
+            return false;
+        }
+
+        const createdAtMs = new Date(notification.createdAt).getTime();
+        return Number.isFinite(createdAtMs) && createdAtMs > lastViewedTimestamp;
+    }).length;
 
     const handleToggleNotifications = async () => {
         const opening = !showNotifications;
         setShowNotifications(opening);
 
         if (opening && user) {
+            const now = Date.now();
+            setLastViewedTimestamp(now);
+
+            if (notificationViewedStorageKey) {
+                window.localStorage.setItem(notificationViewedStorageKey, String(now));
+            }
+
             setIsNotificationActionLoading(true);
-            await refreshUser();
-            await markNotificationsAsRead();
+            const markedAsRead = await markNotificationsAsRead();
+
+            if (!markedAsRead) {
+                await refreshUser();
+            }
+
             setIsNotificationActionLoading(false);
         }
     };
