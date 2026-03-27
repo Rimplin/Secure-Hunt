@@ -33,6 +33,8 @@ const reportSchema = new mongoose.Schema(
     rating: { type: Number, min: 1, max: 5, default: null },
     ratedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     ratedAt: { type: Date },
+    aiFlagged: { type: Boolean, default: false },
+    aiReason: { type: String },
   },
   { timestamps: true }
 );

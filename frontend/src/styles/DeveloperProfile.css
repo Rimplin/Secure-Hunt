@@ -458,6 +458,7 @@
   padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 13px;
+  margin-top: auto;
 }
 
 .dp-report-rating {
@@ -498,6 +499,31 @@
   color: #00c950;
   font-size: 13px;
   font-weight: 700;
+}
+.dp-ai-flag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: hsl(0, 0%, 7%); 
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    margin-bottom: auto;
+    margin-top: auto;
+}
+.dp-ai-flag svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.dp-ai-flag svg path {
+  stroke: #dc2626;
+}
+.dp-ai-flag p{
+  color: #dc2626;
+  font-weight:bold;
 }
 
 /* ===== Responsive ===== */

@@ -1,3 +1,5 @@
+const { analyzeReportAI } = require("../utils/aiModeration");
+const pdfParse = require("../utils/pdfParser");
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
@@ -10,6 +12,30 @@ const { protect, authorize } = require("../middleware/authMiddleware");
 
 // Initialize Stripe
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+
+// @route   GET /api/reports/files/:filename
+// @desc    Stream a file from GridFS
+// @access  Public
+router.get("/files/:filename", async (req, res) => {
+  try {
+    const db = mongoose.connection.db;
+    const bucket = new GridFSBucket(db, { bucketName: "uploads" });
+
+    const files = await bucket.find({ filename: req.params.filename }).toArray();
+    if (!files || files.length === 0) {
+      return res.status(404).json({ message: "File not found." });
+    }
+
+    res.set("Content-Type", files[0].contentType || "application/octet-stream");
+    bucket.openDownloadStreamByName(req.params.filename).pipe(res);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error retrieving file." });
+  }
+});
+
+
 
 // @route   POST /api/reports
 // @desc    Submit a report with optional file attachments (hunters only)
@@ -26,7 +52,51 @@ router.post(
       if (!projectId || !title || !severity || !description) {
         return res.status(400).json({ message: "All required fields must be filled." });
       }
+      let attachmentsText = "";
 
+      console.log("Files received:", req.files?.length ?? 0);
+
+  for (const f of (req.files || [])) {
+    console.log("📎 FILE RECEIVED:", f.originalname, "| mimetype:", f.mimetype, "| size:", f.buffer?.length);
+    const isPdf = f.mimetype === "application/pdf" || f.originalname.toLowerCase().endsWith(".pdf");
+    try {
+      if (f.mimetype === "text/plain") {
+        attachmentsText += `\n--- TXT FILE (${f.originalname}) ---\n`;
+        attachmentsText += f.buffer.toString("utf-8");
+      } 
+      else if (isPdf) {
+    console.log("📄 Parsing PDF:", f.originalname);
+            const pdfData = await pdfParse(f.buffer);
+            const extracted = pdfData.text?.trim() || "";
+            console.log("✅ PDF text length:", extracted.length);
+            console.log("✅ PDF preview:", extracted.slice(0, 300));
+ 
+            attachmentsText += `\n--- PDF FILE (${f.originalname}) ---\n`;
+            attachmentsText += extracted.length > 0 ? extracted : "[EMPTY PDF CONTENT]";
+    }
+    else {
+      attachmentsText += `\n--- ${f.originalname} (unsupported type) ---\n`;
+    }
+  } catch (err) {
+    console.error("❌ Failed to read file:", f.originalname, err.message);
+    console.error(err.stack);
+    attachmentsText += `\n--- ${f.originalname} (failed to read: ${err.message}) ---\n`;
+  }
+  }
+
+console.log(" AI INPUT");
+console.log("DESCRIPTION:", description);
+console.log("ATTACHMENTS TEXT:", attachmentsText);
+console.log("=");
+//now we call AI with description + attachments
+const aiResult = await analyzeReportAI(description, attachmentsText);
+console.log("🤖 AI result:", aiResult);
+
+      if (aiResult.flagged) {
+        console.log("⚠️ AI flagged this report:", aiResult.reason);
+      }
+
+      
       const db = mongoose.connection.db;
       const bucket = new GridFSBucket(db, { bucketName: "uploads" });
 
@@ -57,6 +127,9 @@ router.post(
         description,
         attachments,
         submittedBy: req.user._id,
+
+        aiFlagged: aiResult.flagged,
+        aiReason: aiResult.reason,
       });
 
       res.status(201).json({ message: "Report submitted successfully!", report });
@@ -278,25 +351,5 @@ router.delete("/:id", protect, async (req, res) => {
   }
 });
 
-// @route   GET /api/reports/files/:filename
-// @desc    Stream a file from GridFS
-// @access  Public
-router.get("/files/:filename", async (req, res) => {
-  try {
-    const db = mongoose.connection.db;
-    const bucket = new GridFSBucket(db, { bucketName: "uploads" });
-
-    const files = await bucket.find({ filename: req.params.filename }).toArray();
-    if (!files || files.length === 0) {
-      return res.status(404).json({ message: "File not found." });
-    }
-
-    res.set("Content-Type", files[0].contentType || "application/octet-stream");
-    bucket.openDownloadStreamByName(req.params.filename).pipe(res);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error retrieving file." });
-  }
-});
 
 module.exports = router;

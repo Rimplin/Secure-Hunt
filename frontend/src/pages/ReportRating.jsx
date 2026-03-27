@@ -237,6 +237,11 @@ export default function ReportRating() {
 
               {/* Description */}
               <p className="cr-description">{report.description}</p>
+              {report.aiFlagged && (
+                <p style={{ color: "red", fontWeight: "bold" }}>
+                 Flagged by AI: {report.aiReason}
+               </p>
+              )}
 
               {/* Attachments */}
               {report.attachments?.length > 0 && (

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Star, Shield, Award, TrendingUp, FileText, Calendar, ChevronRight } from 'lucide-react'
+import { Star, Shield, Award, TrendingUp, FileText, Calendar, ChevronRight, AlertTriangle } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext_helper'
 import '../styles/DeveloperProfile.css'
 
@@ -236,6 +236,14 @@ export default function DeveloperProfile() {
                                 </div>
 
                                 <p className="dp-report-description">{report.description}</p>
+
+                                {/* AI flag: only show when aiFlagged is true*/}
+                                {report.aiFlagged && (
+                                    <div className="dp-ai-flag">
+                                        <AlertTriangle size={14} />
+                                        <p>Flagged by AI: {report.aiReason}</p>
+                                    </div>
+                                )}
 
                                 <div className="dp-report-footer">
                                     <div className="dp-report-rating">
