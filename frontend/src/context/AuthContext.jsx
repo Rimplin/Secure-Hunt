@@ -87,7 +87,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const removeNotification = async (notificationId) => {
-    const res = await fetch(`${BASE}/api/auth/notifications/${notificationId}`, {
+    if (!notificationId) {
+      return false;
+    }
+
+    const encodedNotificationId = encodeURIComponent(String(notificationId));
+
+    const res = await fetch(`${BASE}/api/auth/notifications/${encodedNotificationId}`, {
       method: "DELETE",
       credentials: "include",
     });
