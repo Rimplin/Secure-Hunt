@@ -148,8 +148,15 @@ router.get("/", protect, async (req, res) => {
     let query = {};
 
     if (req.user.role === "hunter") {
+      // Hunters only see their own reports
       query.submittedBy = req.user._id;
+    } else if (req.user.role === "company") {
+      // Companies only see reports for projects they own
+      const ownedProjects = await Project.find({ owner: req.user._id }).select("_id");
+      const projectIds = ownedProjects.map((p) => p._id);
+      query.projectId = { $in: projectIds };
     }
+    // administrators see everything (no filter)
 
     const reports = await Report.find(query)
       .populate("projectId", "name bounty")

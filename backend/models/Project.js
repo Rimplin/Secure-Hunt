@@ -11,6 +11,7 @@ const projectSchema = new mongoose.Schema(
     bounty: { type: String, required: true },
     description: { type: String, required: true },
 
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     techStack: {
       frontend: { type:Object },
       backend: { type:Object },

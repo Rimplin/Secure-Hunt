@@ -101,7 +101,7 @@ router.post("/", protect, authorize("company", "administrator"), async (req, res
 
   if(!name || !bounty || !description  )
     return res.status(400).json({message:"Missing required fields"});
-    const newProject = new Project(req.body);
+    const newProject = new Project({ ...req.body, owner: req.user._id });
     const saved = await newProject.save();
     res.status(201).json(saved);
   } catch (err) {
