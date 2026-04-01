@@ -209,6 +209,9 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
     const previousStatus = report.status;
 
     let payoutMessage = "";
+    let payoutSuccessful = false;
+    let payoutTransferId = null;
+    let payoutAmount = null;
 
     // Trigger Stripe dummy payout if status is being set to "accepted"
     if (status === "accepted" && report.status !== "accepted") {
@@ -229,6 +232,9 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
               description: `Bounty payout for report: ${report.title}`
             });
             payoutMessage = " | Payout successful (transfer ID: " + transfer.id + ")";
+            payoutSuccessful = true;
+            payoutTransferId = transfer.id;
+            payoutAmount = project.bounty;
           } catch (stripeError) {
             console.error("Stripe transfer via dummy test failed as expected:", stripeError.message);
             // Append the error to the message to show stripe is working, but don't fail the request
@@ -245,7 +251,8 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
     report.status = status;
     const updated = await report.save();
 
-    let notificationDelivered = false;
+    let statusNotificationDelivered = false;
+    let rewardNotificationDelivered = false;
 
     if (previousStatus !== status && report.submittedBy) {
       const readableStatus = status.charAt(0).toUpperCase() + status.slice(1);
@@ -279,16 +286,59 @@ router.put("/:id/status", protect, authorize("company", "administrator"), async 
           message: `Status updated to "${status}" but failed to notify the report submitter.`,
           report: updated,
           notificationDelivered: false,
+          statusNotificationDelivered: false,
+          rewardNotificationDelivered: false,
         });
       }
 
-      notificationDelivered = true;
+      statusNotificationDelivered = true;
+    }
+
+    if (payoutSuccessful && report.submittedBy) {
+      const rewardNotificationId = new mongoose.Types.ObjectId();
+      const rewardNotificationPayload = {
+        _id: rewardNotificationId,
+        id: rewardNotificationId.toString(),
+        type: "report-reward",
+        title: "Reward paid",
+        message: `Your report "${report.title}" was rewarded. ${payoutAmount ? `Bounty: ${payoutAmount}. ` : ""}Transfer ID: ${payoutTransferId}.`,
+        reportId: report._id,
+        status: "accepted",
+        isRead: false,
+      };
+
+      const rewardNotificationWrite = await User.collection.updateOne(
+        { _id: new mongoose.Types.ObjectId(report.submittedBy) },
+        {
+          $push: {
+            notifications: {
+              $each: [rewardNotificationPayload],
+              $position: 0,
+              $slice: 50,
+            },
+          },
+        }
+      );
+
+      if (!rewardNotificationWrite.matchedCount || !rewardNotificationWrite.modifiedCount) {
+        return res.status(500).json({
+          message: `Status updated to "${status}" but failed to notify the report submitter about the payout.`,
+          report: updated,
+          notificationDelivered: statusNotificationDelivered,
+          statusNotificationDelivered,
+          rewardNotificationDelivered: false,
+        });
+      }
+
+      rewardNotificationDelivered = true;
     }
 
     res.json({
       message: `Status updated to "${status}"${payoutMessage}`,
       report: updated,
-      notificationDelivered,
+      notificationDelivered: statusNotificationDelivered,
+      statusNotificationDelivered,
+      rewardNotificationDelivered,
     });
   } catch (error) {
     console.error("Error updating status:", error);
