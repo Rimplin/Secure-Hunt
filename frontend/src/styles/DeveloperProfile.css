@@ -451,6 +451,25 @@
   overflow: hidden;
 }
 
+.dp-company-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.dp-company-metrics p {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: hsl(0, 0%, 78%);
+}
+
+.dp-company-metrics svg {
+  color: #00c950;
+}
+
 .dp-report-footer {
   display: flex;
   justify-content: space-between;
@@ -561,6 +580,10 @@
   }
 
   .dp-reports-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dp-company-metrics {
     grid-template-columns: 1fr;
   }
 

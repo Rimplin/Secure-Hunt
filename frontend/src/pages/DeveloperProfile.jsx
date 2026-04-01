@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Star, Shield, Award, TrendingUp, FileText, Calendar, ChevronRight, AlertTriangle } from 'lucide-react'
+import { Star, Shield, Award, TrendingUp, FileText, Calendar, ChevronRight, AlertTriangle, Building2, BarChart3, Users, Clock4, CheckCircle2, XCircle } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext_helper'
 import '../styles/DeveloperProfile.css'
 
@@ -24,6 +24,7 @@ export default function DeveloperProfile() {
     const { user, loading: authLoading } = useContext(AuthContext)
     const navigate = useNavigate()
     const [profile, setProfile] = useState(null)
+    const [companyAnalytics, setCompanyAnalytics] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
@@ -36,7 +37,11 @@ export default function DeveloperProfile() {
 
         const fetchProfile = async () => {
             try {
-                const res = await fetch(`${BASE}/api/developers/${user._id}/profile`, {
+                const endpoint = user.role === 'company'
+                    ? `${BASE}/api/projects/company/${user._id}/analytics`
+                    : `${BASE}/api/developers/${user._id}/profile`
+
+                const res = await fetch(endpoint, {
                     credentials: 'include',
                     cache: 'no-store',
                 })
@@ -45,7 +50,11 @@ export default function DeveloperProfile() {
                     throw new Error(data.message || 'Failed to load profile')
                 }
                 const data = await res.json()
-                setProfile(data)
+                if (user.role === 'company') {
+                    setCompanyAnalytics(data)
+                } else {
+                    setProfile(data)
+                }
             } catch (err) {
                 setError(err.message)
             } finally {
@@ -85,6 +94,121 @@ export default function DeveloperProfile() {
         return (
             <div className="dp-error">
                 <p>Error: {error}</p>
+            </div>
+        )
+    }
+
+    if (user.role === 'company') {
+        const companyStats = companyAnalytics || {
+            totalProjects: 0,
+            totalReports: 0,
+            acceptedReports: 0,
+            pendingReports: 0,
+            rejectedReports: 0,
+            engagementRate: 0,
+            projects: [],
+        }
+
+        return (
+            <div className="dp-container">
+                <div className="dp-header">
+                    <div className="dp-avatar">
+                        {user.email?.charAt(0).toUpperCase() || '?'}
+                    </div>
+                    <div className="dp-header-info">
+                        <h1 className="dp-username">{user.email}</h1>
+                        <span className="dp-role-badge company">COMPANY</span>
+                    </div>
+                    <div className="dp-header-glow" />
+                </div>
+
+                <div className="dp-stats">
+                    <div className="dp-stat-card">
+                        <div className="dp-stat-icon dp-stat-icon-total">
+                            <Building2 size={24} />
+                        </div>
+                        <div className="dp-stat-num">{companyStats.totalProjects}</div>
+                        <div className="dp-stat-label">Bounty Projects</div>
+                    </div>
+
+                    <div className="dp-stat-card">
+                        <div className="dp-stat-icon dp-stat-icon-reports">
+                            <Users size={24} />
+                        </div>
+                        <div className="dp-stat-num">{companyStats.totalReports}</div>
+                        <div className="dp-stat-label">Total Reports</div>
+                    </div>
+
+                    <div className="dp-stat-card">
+                        <div className="dp-stat-icon dp-stat-icon-avg">
+                            <CheckCircle2 size={24} />
+                        </div>
+                        <div className="dp-stat-num">{companyStats.acceptedReports}</div>
+                        <div className="dp-stat-label">Accepted Reports</div>
+                    </div>
+
+                    <div className="dp-stat-card">
+                        <div className="dp-stat-icon dp-stat-icon-credibility">
+                            <BarChart3 size={24} />
+                        </div>
+                        <div className="dp-stat-num">{companyStats.engagementRate}</div>
+                        <div className="dp-stat-label">Reports Per Project</div>
+                    </div>
+                </div>
+
+                <div className="dp-reports-section">
+                    <div className="dp-section-header">
+                        <h2 className="dp-section-title">
+                            <Shield size={20} />
+                            Project Engagement
+                        </h2>
+                    </div>
+
+                    {companyStats.projects.length === 0 ? (
+                        <div className="dp-empty">
+                            <FileText size={48} />
+                            <h3>No Projects Yet</h3>
+                            <p>Create a bounty project to start tracking engagement analytics.</p>
+                            <button className="dp-submit-btn" onClick={() => navigate('/create')}>
+                                Create Project
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="dp-reports-grid">
+                            {companyStats.projects.map((project) => (
+                                <div key={project.projectId} className="dp-report-card">
+                                    <div className="dp-report-top">
+                                        <div className="dp-report-title-wrap">
+                                            <h3 className="dp-report-title">{project.name}</h3>
+                                            <p className="dp-report-project">Bounty: {project.bounty}</p>
+                                        </div>
+                                        <div className="dp-report-badges">
+                                            <span className="dp-status-badge" style={{ background: '#34c759' }}>
+                                                {project.totalReports} reports
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="dp-company-metrics">
+                                        <p><CheckCircle2 size={14} /> Accepted: {project.acceptedReports}</p>
+                                        <p><Clock4 size={14} /> Pending: {project.pendingReports}</p>
+                                        <p><Star size={14} /> Reviewed: {project.reviewedReports}</p>
+                                        <p><XCircle size={14} /> Rejected: {project.rejectedReports}</p>
+                                    </div>
+
+                                    <div className="dp-report-footer">
+                                        <div className="dp-report-date">
+                                            <Calendar size={12} />
+                                            {project.lastReportAt
+                                                ? `Last report: ${new Date(project.lastReportAt).toLocaleDateString()}`
+                                                : 'No reports yet'}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         )
     }
