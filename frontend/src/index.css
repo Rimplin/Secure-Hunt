@@ -497,6 +497,8 @@ html, body, #root {
 .cve-subtitle {
   font-size: 18px;
   color: hsl(0, 0%, 71%);
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .cve-search-form {

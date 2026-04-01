@@ -50,9 +50,7 @@ const CVESearch = () => {
     <div className="cve-page">
       <div className="cve-header">
         <h1 className="cve-title">Vulnerability Scanner</h1>
-        <p className="cve-subtitle">
-          Enter a software product name to retrieve its known vulnerabilities (CVEs)
-        </p>
+        <p className="cve-subtitle">Enter a software product name to retrieve its known vulnerabilities (CVEs)</p>
       </div>
 
       <form onSubmit={handleSearch} className="cve-search-form">

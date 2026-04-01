@@ -23,7 +23,7 @@ const fetchVulnerabilitiesForComponent = async (type, version) => {
     console.log(`📡 Fetching NVD data for: "${query}"`);
     
     const response = await axios.get(
-      `${NVD_BASE_URL}?keywordSearch=${encodeURIComponent(query)}&resultsPerPage=5`
+      `${NVD_BASE_URL}?keywordSearch=${encodeURIComponent(query)}&resultsPerPage=3`
     );
 
     const vulnerabilities = response.data.vulnerabilities || [];
