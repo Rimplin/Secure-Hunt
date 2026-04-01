@@ -7,13 +7,27 @@ const cookieParser = require("cookie-parser");
 const app = express();
 
 // middleware
-app.use(cors({
-  origin: [
-    "https://securehunt.vercel.app", // production
-    "http://localhost:5173",          // local dev
-  ],
+const allowedOrigins = [
+  "https://securehunt.vercel.app", // production
+  "http://localhost:5173", // local dev
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
-}));
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
