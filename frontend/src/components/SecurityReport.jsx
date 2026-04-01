@@ -79,7 +79,7 @@ const SecurityReport = ({ projectId }) => {
               <div className="cve-list">
                 {item.cves.map((cve) => (
                   <div key={cve.id} className="cve-item">
-                    <div className="cve-header">
+                    <div className="cve-header-report">
                       <a 
                         href={cve.link} 
                         target="_blank" 

@@ -122,7 +122,7 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
-.cve-header {
+.cve-header-report {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
