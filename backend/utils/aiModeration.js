@@ -63,10 +63,10 @@ If nothing is flagged, return: { "flagged": false, "reasons": [] }`,
     const text = response.choices[0].message.content;
     console.log("Raw AI response:", text);
 
-try {
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
+    try {
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) return { flagged: false, reason: "Invalid AI response format" };
- 
+
       const parsed = JSON.parse(jsonMatch[0]);
       return {
         flagged: parsed.flagged ?? false,
@@ -82,6 +82,6 @@ try {
     return { flagged: false, reason: "AI analysis failed" };
   }
 };
- 
+
 module.exports = { analyzeReportAI };
 

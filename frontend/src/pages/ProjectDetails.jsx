@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import SecurityReport from "../components/SecurityReport";
+import AITestingGuidance from "../components/AITestingGuidance";
 
 function ProjectDetails() {
   const { id } = useParams();
@@ -100,6 +101,7 @@ function ProjectDetails() {
       </div>
 
       <SecurityReport projectId={id} />
+      <AITestingGuidance projectId={id} />
     </div>
   );
 }
