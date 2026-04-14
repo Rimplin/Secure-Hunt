@@ -9,7 +9,7 @@ import SignUp from './pages/SignUp.jsx'
 import ReportSubmission from './pages/ReportSubmission.jsx'
 import ReportRating from './pages/ReportRating.jsx'
 import AIRecommendations from './pages/AIRecommendations.jsx'
-import Discussion from './pages/Discussion.jsx'
+import Forum from './pages/Forum.jsx'
 import CreateProject from './pages/CreateProject.jsx'
 import CVESearch from './pages/CVESearch.jsx'
 import DeveloperProfile from './pages/DeveloperProfile.jsx'
@@ -28,7 +28,7 @@ function App() {
         <Route path="/report" element={<ReportSubmission />} />
         <Route path="/rate-reports" element={<ReportRating />} />
         <Route path="/recommendations" element={<AIRecommendations />} />
-        <Route path="/discussion" element={<Discussion />} />
+        <Route path="/forum" element={<Forum />} />
         <Route path="/create" element={<CreateProject />} />
         <Route path="/profile" element={<DeveloperProfile />} />
       </Routes>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {Plus} from 'lucide-react'
 
 function BountyBrowser() {
   const [projects, setProjects] = useState([]);
@@ -71,7 +72,10 @@ function BountyBrowser() {
           </p>
         </div>
         <Link to="/create" className="post-link">
-          <button className="post-button">+ Post Project</button>
+          <button className="post-button">
+            <Plus size={16} />
+             Post Project
+             </button>
         </Link>
       </div>
 
