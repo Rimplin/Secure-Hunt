@@ -49,11 +49,8 @@ function ProjectDetails() {
   ];
 
   return (
-    <div style={{ padding: "40px"}}>
-      <h3
-          style={{ fontSize: "35px", fontWeight: "1000", marginBottom:"50px", marginLeft: "20px" }}
-          className="active-bounties"
-        >
+    <div className="proj-details-page">
+      <h3 className="active-bounties proj-details-title">
           <span style={{ color: "white" }}> PROJECT </span>
           <span style={{ color: "#00c950" }}> DETAILS</span>
         </h3>

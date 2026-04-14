@@ -140,9 +140,19 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-.sev-CRITICAL { color: #ff3b30; font-weight: bold; }
-.sev-HIGH { color: #ff9f0a; font-weight: bold; }
-.sev-MEDIUM { color: #ffd60a; }
+.sev-CRITICAL {
+  color: #ff3b30;
+  font-weight: bold;
+}
+
+.sev-HIGH {
+  color: #ff9f0a;
+  font-weight: bold;
+}
+
+.sev-MEDIUM {
+  color: #ffd60a;
+}
 
 .cve-desc {
   font-size: 13px;
@@ -159,9 +169,17 @@
 }
 
 @keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
 }
 
 .loading-report {

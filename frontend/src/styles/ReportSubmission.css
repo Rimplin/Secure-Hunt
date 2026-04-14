@@ -216,3 +216,20 @@
   transform: none;
 }
 
+@media (max-width: 768px) {
+  .report-container {
+    padding: 24px 16px;
+  }
+
+  .report-content {
+    padding: 24px 16px;
+  }
+
+  .report-header h2 {
+    font-size: 24px;
+  }
+
+  .report-header {
+    margin-bottom: 24px;
+  }
+}
