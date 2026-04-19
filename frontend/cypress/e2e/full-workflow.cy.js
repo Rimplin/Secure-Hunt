@@ -4,47 +4,6 @@ describe('Interactive Full Workflow Suite', () => {
     return false;
   });
 
-  before(() => {
-    // 1. Seed the administrator user
-    cy.request({
-      method: 'POST',
-      url: 'http://localhost:5001/api/auth/register',
-      failOnStatusCode: false,
-      body: { email: 'administrator@hotmail.com', password: '123456789', role: 'administrator' }
-    });
-
-    // 2. Seed a company user
-    cy.request({
-      method: 'POST',
-      url: 'http://localhost:5001/api/auth/register',
-      failOnStatusCode: false,
-      body: { email: 'company@hotmail.com', password: '123456789', role: 'company' }
-    });
-
-    // 3. Login as company and POST the Testing project if it doesn't exist
-    cy.request({
-      method: 'POST',
-      url: 'http://localhost:5001/api/auth/login',
-      failOnStatusCode: false,
-      body: { email: 'company@hotmail.com', password: '123456789' }
-    }).then(() => {
-      cy.request({
-        method: 'POST',
-        url: 'http://localhost:5001/api/projects',
-        failOnStatusCode: false,
-        headers: {
-          'Content-Type': 'application/json' // Assuming cookie handles auth
-        },
-        body: {
-          name: 'Testing',
-          bounty: '$1000',
-          description: 'A dedicated Testing project for CI/CD checks.',
-          techStack: { frontend: { type: 'React', version: '18' }, backend: { type: 'Node', version: '20' }, database: { type: 'MongoDB', version: '6' }, os: { type: 'Ubuntu', version: '22.04' }, webServer: { type: 'Nginx', version: '1.24' } }
-        }
-      });
-    });
-  });
-
   it('performs the exact workflow requested by the user seamlessly', () => {
     // Increase viewport size so the navbar doesn't collapse into a mobile menu
     cy.viewport(1440, 900);

@@ -35,6 +35,12 @@ jobs:
       run: npm ci
       working-directory: ./backend
 
+    - name: Seed Database
+      run: node seed.js
+      working-directory: ./backend
+      env:
+        MONGO_URI: mongodb://localhost:27017/secure-hunt-test
+
     - name: Start Backend background
       run: npm run dev &
       working-directory: ./backend

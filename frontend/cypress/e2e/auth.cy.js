@@ -1,18 +1,4 @@
 describe('Authentication Flow', () => {
-  before(() => {
-    // Ensure the test user exists (required for blank CI databases)
-    cy.request({
-      method: 'POST',
-      url: 'http://localhost:5001/api/auth/register',
-      failOnStatusCode: false,
-      body: {
-        email: 'administrator@hotmail.com',
-        password: '123456789',
-        role: 'administrator'
-      }
-    });
-  });
-
   it('allows a user to sign in and log out', () => {
     cy.visit('/login');
     
