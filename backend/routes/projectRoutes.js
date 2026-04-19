@@ -7,7 +7,7 @@ const { protect, authorize } = require("../middleware/authMiddleware");
 // GET all projects
 router.get("/", async (req, res) => {
   try {
-    const projects = await Project.find().sort({ createdAt: -1 });
+    const projects = await Project.find().populate("owner", "email").sort({ createdAt: -1 });
     res.json(projects);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
@@ -67,7 +67,7 @@ router.get("/search", async (req, res) => {
   };
 }
 
-    const projects = await Project.find(query).sort({ createdAt: -1 });
+    const projects = await Project.find(query).populate("owner", "email").sort({ createdAt: -1 });
 
     res.json(projects);
 
@@ -181,7 +181,7 @@ router.get("/company/:id/analytics", protect, authorize("company", "administrato
 // GET project by Mongo ID
 router.get("/:id", async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id);
+    const project = await Project.findById(req.params.id).populate("owner", "email");
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });

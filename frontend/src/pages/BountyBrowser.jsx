@@ -143,19 +143,34 @@ function BountyBrowser() {
       <div className="projects">
         {Array.isArray(projects) && projects.map((proj) => (
           <div className="proj-card" key={proj._id}>
+            {proj.owner && (
+        <div className="proj-owner-row">
+           <Link to={`/profile/${proj.owner._id}`} className="profile-link proj-owner-link">
+            <div className="proj-owner-avatar">
+              {proj.owner.email?.charAt(0).toUpperCase() || "?"}
+           </div>
+           <span>Posted by <span className="email">{proj.owner.email}</span></span>
+           </Link>
+       </div>
+        )}
             <h3>{proj.name}</h3>
-            <p className="proj-description">
-              {proj.description.length > 120
-                ? proj.description.substring(0, 120) + "..."
-                : proj.description}
-            </p>
-            <div className="bounty-badge">
-              {proj.bounty.startsWith("$") ? proj.bounty : `$${proj.bounty}`}
-            </div>
-            <Link to={`/projects/${proj._id}`} className="view-link">
-              <button className="viewDetails-button">View Details</button>
-            </Link>
-          </div>
+
+          <p className="proj-description">
+           {proj.description.length > 120
+           ? proj.description.substring(0, 120) + "..."
+          : proj.description}
+          </p>
+
+         
+
+         <div className="bounty-badge">
+         {proj.bounty.startsWith("$") ? proj.bounty : `$${proj.bounty}`}
+         </div>
+
+       <Link to={`/projects/${proj._id}`} className="view-link">
+         <button className="viewDetails-button">View Details</button>
+      </Link>
+      </div>
         ))}
       </div>
 

@@ -465,3 +465,20 @@
     padding: 24px 20px;
   }
 }
+
+.forum-author-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.forum-author-link:hover {
+  color: #00c950;
+}
+
+.forum-post-author.forum-author-link,
+.forum-comment-author.forum-author-link {
+  font-weight: 600;
+}

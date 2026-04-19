@@ -12,3 +12,4 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
 app.use('/api/forum', forumRoutes)
+app.use("/api/users", require("./routes/userRoutes"));

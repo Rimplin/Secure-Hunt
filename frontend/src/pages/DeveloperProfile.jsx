@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Star, Shield, Award, TrendingUp, FileText, Calendar, ChevronRight, AlertTriangle, Building2, BarChart3, Users, Clock4, CheckCircle2, XCircle, Trash2 } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext_helper'
 import '../styles/DeveloperProfile.css'
@@ -23,6 +23,9 @@ const STATUS_COLORS = {
 export default function DeveloperProfile() {
     const { user, loading: authLoading } = useContext(AuthContext)
     const navigate = useNavigate()
+    const params = useParams()
+    const viewedUserId = params.id || user?._id
+    const isOwnProfile = !params.id || params.id === user?._id
     const [profile, setProfile] = useState(null)
     const [companyAnalytics, setCompanyAnalytics] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -33,27 +36,31 @@ export default function DeveloperProfile() {
 
     useEffect(() => {
         if (authLoading) return
-        if (!user) return
+        if (!user || !viewedUserId) return
+        setLoading(true)
+        setError(null)
+        setProfile(null)
+        setCompanyAnalytics(null)
 
         const fetchProfile = async () => {
             try {
-                const endpoint = user.role === 'company'
-                    ? `${BASE}/api/projects/company/${user._id}/analytics`
-                    : `${BASE}/api/developers/${user._id}/profile`
+                const endpoint = `${BASE}/api/users/${viewedUserId}/profile`
 
                 const res = await fetch(endpoint, {
                     credentials: 'include',
                     cache: 'no-store',
                 })
+                const data = await res.json()
                 if (!res.ok) {
-                    const data = await res.json()
                     throw new Error(data.message || 'Failed to load profile')
                 }
-                const data = await res.json()
-                if (user.role === 'company') {
-                    setCompanyAnalytics(data)
+
+                if(data.mode === 'company'){
+                   setCompanyAnalytics(data)
+                   setProfile(null)
                 } else {
-                    setProfile(data)
+                   setProfile(data)
+                   setCompanyAnalytics(null)
                 }
             } catch (err) {
                 setError(err.message)
@@ -63,7 +70,7 @@ export default function DeveloperProfile() {
         }
 
         fetchProfile()
-    }, [user, authLoading])
+    }, [user, authLoading, viewedUserId])
 
     const handleDeleteReport = async (reportId) => {
     const confirmed = window.confirm("Delete this pending report?");
@@ -126,8 +133,10 @@ export default function DeveloperProfile() {
         )
     }
 
-    if (user.role === 'company') {
+    if (companyAnalytics) {
         const companyStats = companyAnalytics || {
+            email: '',
+            role: 'company',
             totalProjects: 0,
             totalReports: 0,
             acceptedReports: 0,
@@ -141,11 +150,11 @@ export default function DeveloperProfile() {
             <div className="dp-container">
                 <div className="dp-header">
                     <div className="dp-avatar">
-                        {user.email?.charAt(0).toUpperCase() || '?'}
+                   {companyStats.email?.charAt(0).toUpperCase() || '?'}
                     </div>
                     <div className="dp-header-info">
-                        <h1 className="dp-username">{user.email}</h1>
-                        <span className="dp-role-badge company">COMPANY</span>
+                      <h1 className="dp-username">{companyStats.email}</h1>
+                      <span className="dp-role-badge company">COMPANY</span>
                     </div>
                     <div className="dp-header-glow" />
                 </div>
@@ -202,8 +211,8 @@ export default function DeveloperProfile() {
                             </button>
                         </div>
                     ) : (
-                        <div className="dp-reports-grid">
-                            {companyStats.projects.map((project) => (
+                        <div className="dp-reports-grid"> {/*here */}
+                            {companyStats.projects.map((project) => (  
                                 <div key={project.projectId} className="dp-report-card">
                                     <div className="dp-report-top">
                                         <div className="dp-report-title-wrap">
@@ -447,7 +456,7 @@ export default function DeveloperProfile() {
                                         <ChevronRight size={14} />
                                     </div>
                                 )}
-                                {report.status === 'pending' && (
+                                {isOwnProfile && report.status === 'pending' && (
                                 <button
                                     className="dp-delete-report-btn"
                                     onClick={() => handleDeleteReport(report._id)}

@@ -32,6 +32,7 @@ function App() {
         <Route path="/forum" element={<Forum />} />
         <Route path="/create" element={<CreateProject />} />
         <Route path="/profile" element={<DeveloperProfile />} />
+        <Route path="/profile/:id" element={<DeveloperProfile />} />
         <Route path="/admin/users" element={<AdminUsers />} />
       </Routes>
 
