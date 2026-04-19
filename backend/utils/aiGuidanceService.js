@@ -48,6 +48,19 @@ const generateTestingGuidance = async (securityReport) => {
     )
     .join("\n\n");
 
+  // Bypass API call if the dummy environment variable is left as placeholder
+  if (!process.env.GROQ_API_KEY || process.env.GROQ_API_KEY === 'your_groq_api_key_here') {
+    return {
+      recommendations: [
+        {
+          title: "Setup Needed",
+          priority: "medium",
+          reason: "Please set a valid GROQ_API_KEY in the backend .env to see AI testing guidance."
+        }
+      ]
+    };
+  }
+
   try {
     const response = await groq.chat.completions.create({
       model: "llama-3.1-8b-instant",

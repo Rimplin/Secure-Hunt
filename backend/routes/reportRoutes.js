@@ -43,7 +43,7 @@ router.get("/files/:filename", async (req, res) => {
 router.post(
   "/",
   protect,
-  authorize("hunter"),
+  authorize("hunter", "administrator"),
   upload.array("attachments", 5), // max 5 files
   async (req, res) => {
     try {
