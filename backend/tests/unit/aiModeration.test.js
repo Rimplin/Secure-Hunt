@@ -11,59 +11,75 @@ jest.mock("openai", () => {
 });
 
 const { analyzeReportAI } = require("../../utils/aiModeration");
-const OpenAI = require("openai");
 
 describe("AI Moderation Unit Tests", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("should return flagged: true when the AI flags the report", async () => {
-    // Arrange
-    mockCreate.mockResolvedValue({
-      choices: [
-        {
-          message: {
-            content: '{"flagged": true, "reasons": ["description is too short"]}',
+  it("should return flagged: true when the AI flags the description only", async () => {
+    mockCreate
+      .mockResolvedValueOnce({
+        choices: [
+          {
+            message: {
+              content: '{"flagged": true, "reason": "lacks sufficient detail"}',
+            },
           },
-        },
-      ],
-    });
+        ],
+      })
+      .mockResolvedValueOnce({
+        choices: [
+          {
+            message: {
+              content: '{"flagged": false, "reason": ""}',
+            },
+          },
+        ],
+      });
 
-    // Act
     const result = await analyzeReportAI("short", "None");
 
-    // Assert
     expect(result.flagged).toBe(true);
-    expect(result.reason).toBe("description is too short");
+    expect(result.reason).toBe("Description: lacks sufficient detail");
+    expect(result.descriptionFlagged).toBe(true);
+    expect(result.attachmentFlagged).toBe(false);
   });
 
-  it("should return flagged: false when the AI does not flag the report", async () => {
-    // Arrange
-    mockCreate.mockResolvedValue({
-      choices: [
-        {
-          message: {
-            content: '{"flagged": false, "reasons": []}',
+  it("should return flagged: false when neither description nor attachment is flagged", async () => {
+    mockCreate
+      .mockResolvedValueOnce({
+        choices: [
+          {
+            message: {
+              content: '{"flagged": false, "reason": ""}',
+            },
           },
-        },
-      ],
-    });
+        ],
+      })
+      .mockResolvedValueOnce({
+        choices: [
+          {
+            message: {
+              content: '{"flagged": false, "reason": ""}',
+            },
+          },
+        ],
+      });
 
-    // Act
     const result = await analyzeReportAI(
-      "A very descriptive vulnerability report.",
+      "A descriptive vulnerability report with enough detail.",
       "POC attached."
     );
 
-    // Assert
     expect(result.flagged).toBe(false);
     expect(result.reason).toBe("No reason provided");
+    expect(result.descriptionFlagged).toBe(false);
+    expect(result.attachmentFlagged).toBe(false);
   });
 
   it("should handle invalid JSON from AI gracefully", async () => {
-    // Arrange
-    mockCreate.mockResolvedValue({
+    mockCreate.mockResolvedValueOnce({
       choices: [
         {
           message: {
@@ -73,11 +89,9 @@ describe("AI Moderation Unit Tests", () => {
       ],
     });
 
-    // Act
     const result = await analyzeReportAI("test", "test");
 
-    // Assert
     expect(result.flagged).toBe(false);
-    expect(result.reason).toBe("Invalid AI response format");
+    expect(result.reason).toBe("AI request failed");
   });
 });
