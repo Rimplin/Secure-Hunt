@@ -596,3 +596,60 @@
     font-size: 22px;
   }
 }
+
+.dp-delete-report-btn {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid rgba(255, 59, 48, 0.4);
+  color: #ff3b30;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.dp-delete-report-btn:hover {
+  background: rgba(255, 59, 48, 0.08);
+  border-color: #ff3b30;
+}
+
+.dp-report-attachments {
+  margin-top: 12px;
+}
+
+.dp-report-attachments-title {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: hsl(0, 0%, 85%);
+}
+
+.dp-report-attachments-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dp-report-attachment-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 201, 80, 0.28);
+  background: rgba(0, 201, 80, 0.08);
+  color: #00c950;
+  font-size: 13px;
+  font-weight: 600;
+  transition: 0.2s ease;
+}
+
+.dp-report-attachment-link:hover {
+  background: rgba(0, 201, 80, 0.14);
+  border-color: rgba(0, 201, 80, 0.45);
+}

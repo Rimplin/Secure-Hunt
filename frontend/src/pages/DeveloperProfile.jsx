@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Star, Shield, Award, TrendingUp, FileText, Calendar, ChevronRight, AlertTriangle, Building2, BarChart3, Users, Clock4, CheckCircle2, XCircle } from 'lucide-react'
+import { Star, Shield, Award, TrendingUp, FileText, Calendar, ChevronRight, AlertTriangle, Building2, BarChart3, Users, Clock4, CheckCircle2, XCircle, Trash2 } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext_helper'
 import '../styles/DeveloperProfile.css'
 
@@ -64,6 +64,34 @@ export default function DeveloperProfile() {
 
         fetchProfile()
     }, [user, authLoading])
+
+    const handleDeleteReport = async (reportId) => {
+    const confirmed = window.confirm("Delete this pending report?");
+    if (!confirmed) return;
+
+    try {
+        const res = await fetch(`${BASE}/api/reports/${reportId}`, {
+            method: "DELETE",
+            credentials: "include",
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message || "Failed to delete report");
+        }
+
+        setProfile((prev) => ({
+            ...prev,
+            allReports: (prev.allReports || []).filter((r) => r._id !== reportId),
+            acceptedReports: (prev.acceptedReports || []).filter((r) => r._id !== reportId),
+            totalReportsCount: Math.max((prev.totalReportsCount || 1) - 1, 0),
+            acceptedReportsCount: (prev.acceptedReports || []).filter((r) => r._id !== reportId && r.status === "accepted").length,
+        }));
+    } catch (err) {
+        alert(err.message);
+    }
+    }
 
     // --- Loading state ---
     if (authLoading || loading) {
@@ -361,12 +389,31 @@ export default function DeveloperProfile() {
 
                                 <p className="dp-report-description">{report.description}</p>
 
+                                {report.attachments?.length > 0 && (
+                                    <div className="dp-report-attachments">
+                                    <p className="dp-report-attachments-title">Attachments:</p>
+                                    <div className="dp-report-attachments-list">
+                                        {report.attachments.map((attachment, index) => (
+                                            <a
+                                            key={`${report._id}-${index}`}
+                                            className="dp-report-attachment-link"
+                                            href={`${BASE}/api/reports/files/${attachment.filename}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                        {attachment.originalName || `Attachment ${index + 1}`}
+                                            </a>
+                                    ))}
+                                    </div>
+                                </div>
+                                )}
+
                                 {/* AI flag: only show when aiFlagged is true*/}
                                 {report.aiFlagged && (
-                                    <div className="dp-ai-flag">
-                                        <AlertTriangle size={14} />
-                                        <p>Flagged by AI: {report.aiReason}</p>
-                                    </div>
+                                <div className="dp-ai-flag">
+                                <AlertTriangle size={14} />
+                                <p>Flagged by AI: {report.aiReason}</p>
+                                </div>
                                 )}
 
                                 <div className="dp-report-footer">
@@ -399,6 +446,16 @@ export default function DeveloperProfile() {
                                         <span>{report.projectId.bounty}</span>
                                         <ChevronRight size={14} />
                                     </div>
+                                )}
+                                {report.status === 'pending' && (
+                                <button
+                                    className="dp-delete-report-btn"
+                                    onClick={() => handleDeleteReport(report._id)}
+                                    type="button"
+                                 >
+                                 <Trash2 size={14} />
+                                 Delete Report
+                                </button>
                                 )}
                             </div>
                         ))}

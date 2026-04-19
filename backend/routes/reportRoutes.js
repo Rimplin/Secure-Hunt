@@ -392,8 +392,9 @@ router.delete("/:id", protect, async (req, res) => {
 
     const isAdmin = req.user.role === "administrator";
     const isPending = report.status === "pending";
+    const isOwner =report.submittedBy && report.submittedBy.toString() === req.user._id.toString();
 
-    if (!isAdmin && !isPending) {
+    if (!isAdmin &&  !(isOwner && isPending)){
       return res.status(403).json({
         message: "Not authorized. Only admins or owners of pending reports can delete."
       });
