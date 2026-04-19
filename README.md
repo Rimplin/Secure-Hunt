@@ -8,4 +8,4 @@ backend url: https://secure-hunt-backend.onrender.com
 
 api endpoints:
 
-https://secure-hunt-backend.onrender.com/api/projects (should return json file containing data found on mongodb)
+https://secure-hunt-backend.onrender.com/api/projects (should return json file containing data found on mongodb).
