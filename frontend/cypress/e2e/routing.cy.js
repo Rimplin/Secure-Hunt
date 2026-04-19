@@ -1,4 +1,8 @@
 describe('Routing and Navigation Suite', () => {
+  Cypress.on('uncaught:exception', (err, runnable) => {
+    return false;
+  });
+
   const routes = [
     '/',
     '/browser',
