@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { useContext, useEffect, useRef, useState } from 'react'
-import { Bell, Menu, X } from 'lucide-react'
+import { Bell, ChevronDown, Menu, X } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext_helper'
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/Secure-Hunt-pic-black.png"
@@ -17,7 +17,9 @@ function Navbar() {
     } = useContext(AuthContext);
     const navigate = useNavigate();
     const notificationRef = useRef(null);
+    const adminMenuRef = useRef(null);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [showAdminMenu, setShowAdminMenu] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isNotificationActionLoading, setIsNotificationActionLoading] = useState(false);
     const [lastViewedTimestamp, setLastViewedTimestamp] = useState(null);
@@ -119,6 +121,10 @@ function Navbar() {
             if (notificationRef.current && !notificationRef.current.contains(event.target)) {
                 setShowNotifications(false);
             }
+
+            if (adminMenuRef.current && !adminMenuRef.current.contains(event.target)) {
+                setShowAdminMenu(false);
+            }
         };
 
         document.addEventListener("mousedown", handleClickOutside);
@@ -135,7 +141,10 @@ function Navbar() {
     // Close menu when a link is clicked
     const handleLinkClick = () => {
         setIsMobileMenuOpen(false);
+        setShowAdminMenu(false);
     };
+
+    const isAdministrator = user?.role === "administrator";
 
     return (
         <nav className="navbar">
@@ -166,7 +175,40 @@ function Navbar() {
                         <NavLink to="/rate-reports" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Reports</NavLink>
                     )}
                     <NavLink to="/recommendations" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>AI Recommendations</NavLink>
-                    {user && (
+                    {isAdministrator && (
+                        <div className="admin-menu" ref={adminMenuRef}>
+                            <button
+                                type="button"
+                                className={`admin-menu-btn ${showAdminMenu ? "nav-active" : ""}`}
+                                onClick={() => setShowAdminMenu((prev) => !prev)}
+                                aria-haspopup="menu"
+                                aria-expanded={showAdminMenu}
+                            >
+                                Admin
+                                <ChevronDown size={14} />
+                            </button>
+
+                            {showAdminMenu && (
+                                <div className="admin-menu-popout" role="menu" aria-label="Admin menu">
+                                    <NavLink
+                                        to="/profile"
+                                        onClick={handleLinkClick}
+                                        className={({ isActive }) => isActive ? "nav-active" : ""}
+                                    >
+                                        Profile
+                                    </NavLink>
+                                    <NavLink
+                                        to="/admin/users"
+                                        onClick={handleLinkClick}
+                                        className={({ isActive }) => isActive ? "nav-active" : ""}
+                                    >
+                                        User Role Management
+                                    </NavLink>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    {user && !isAdministrator && (
                         <NavLink to="/profile" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Profile</NavLink>
                     )}
                 </div>

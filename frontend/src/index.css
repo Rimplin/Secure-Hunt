@@ -90,6 +90,58 @@ body,
   color: hsl(144, 100%, 39%);
 }
 
+.admin-menu {
+  position: relative;
+}
+
+.admin-menu-btn {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: white;
+  font-size: inherit;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.admin-menu-btn:hover {
+  color: #00c950;
+}
+
+.admin-menu-btn.nav-active {
+  color: hsl(144, 100%, 39%);
+}
+
+.admin-menu-popout {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 220px;
+  background: hsl(0, 0%, 7%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  display: grid;
+  gap: 2px;
+  z-index: 20;
+}
+
+.admin-menu-popout a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.admin-menu-popout a:hover,
+.admin-menu-popout .nav-active {
+  background: rgba(0, 201, 80, 0.12);
+}
+
 .nav-left {
   display: flex;
   align-items: center;
@@ -1147,6 +1199,23 @@ body,
     flex-direction: column;
     width: 100%;
     gap: 20px;
+  }
+
+  .admin-menu {
+    width: 100%;
+  }
+
+  .admin-menu-btn {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .admin-menu-popout {
+    position: static;
+    margin-top: 8px;
+    width: 100%;
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.1);
   }
 
   .nav-actions {

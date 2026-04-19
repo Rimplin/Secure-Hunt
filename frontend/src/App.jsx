@@ -13,6 +13,7 @@ import Forum from './pages/Forum.jsx'
 import CreateProject from './pages/CreateProject.jsx'
 import CVESearch from './pages/CVESearch.jsx'
 import DeveloperProfile from './pages/DeveloperProfile.jsx'
+import AdminUsers from './pages/AdminUsers.jsx'
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/forum" element={<Forum />} />
         <Route path="/create" element={<CreateProject />} />
         <Route path="/profile" element={<DeveloperProfile />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
       </Routes>
 
       <Footer />
