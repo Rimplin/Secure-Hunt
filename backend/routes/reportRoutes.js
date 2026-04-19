@@ -53,43 +53,83 @@ router.post(
         return res.status(400).json({ message: "All required fields must be filled." });
       }
       let attachmentsText = "";
+      let unreadableAttachment = false;
 
       console.log("Files received:", req.files?.length ?? 0);
 
-  for (const f of (req.files || [])) {
-    console.log("📎 FILE RECEIVED:", f.originalname, "| mimetype:", f.mimetype, "| size:", f.buffer?.length);
-    const isPdf = f.mimetype === "application/pdf" || f.originalname.toLowerCase().endsWith(".pdf");
-    try {
-      if (f.mimetype === "text/plain") {
-        attachmentsText += `\n--- TXT FILE (${f.originalname}) ---\n`;
-        attachmentsText += f.buffer.toString("utf-8");
-      } 
-      else if (isPdf) {
-    console.log("📄 Parsing PDF:", f.originalname);
-            const pdfData = await pdfParse(f.buffer);
-            const extracted = pdfData.text?.trim() || "";
-            console.log("✅ PDF text length:", extracted.length);
-            console.log("✅ PDF preview:", extracted.slice(0, 300));
- 
-            attachmentsText += `\n--- PDF FILE (${f.originalname}) ---\n`;
-            attachmentsText += extracted.length > 0 ? extracted : "[EMPTY PDF CONTENT]";
+ for (const f of (req.files || [])) {
+  console.log("📎 FILE RECEIVED:", f.originalname, "| mimetype:", f.mimetype, "| size:", f.buffer?.length);
+
+  const isPdf = f.mimetype === "application/pdf" || f.originalname.toLowerCase().endsWith(".pdf");
+
+  try {
+    if (f.mimetype === "text/plain") {
+      const text = f.buffer.toString("utf-8").trim();
+
+      if (text.length < 50) {
+        unreadableAttachment = true;
+      }
+
+      attachmentsText += `\n--- TXT FILE (${f.originalname}) ---\n${text}`;
+    }
+
+    else if (isPdf) {
+      console.log("📄 Parsing PDF:", f.originalname);
+
+      try {
+        const pdfData = await pdfParse(f.buffer);
+        const extracted = pdfData.text?.trim() || "";
+
+        console.log("✅ PDF text length:", extracted.length);
+        console.log("✅ PDF preview:", extracted.slice(0, 300));
+
+        if (!extracted || extracted.length < 100) {
+          unreadableAttachment = true;
+        }
+
+        attachmentsText += `\n--- PDF FILE (${f.originalname}) ---\n${extracted}`;
+      } catch (err) {
+        console.error("❌ Failed to parse PDF:", err.message);
+        unreadableAttachment = true;
+      }
     }
     else {
       attachmentsText += `\n--- ${f.originalname} (unsupported type) ---\n`;
+      unreadableAttachment = true;
     }
+
   } catch (err) {
     console.error("❌ Failed to read file:", f.originalname, err.message);
-    console.error(err.stack);
-    attachmentsText += `\n--- ${f.originalname} (failed to read: ${err.message}) ---\n`;
+    unreadableAttachment = true;
   }
-  }
+}
 
 console.log(" AI INPUT");
 console.log("DESCRIPTION:", description);
 console.log("ATTACHMENTS TEXT:", attachmentsText);
 console.log("=");
+const MAX_ATTACHMENT_CHARS = 4000;
+
+if (attachmentsText.length > MAX_ATTACHMENT_CHARS) {
+  attachmentsText = attachmentsText.slice(0, MAX_ATTACHMENT_CHARS);
+  attachmentsText += "\n\n[ATTACHMENT TEXT TRUNCATED]";
+}
 //now we call AI with description + attachments
-const aiResult = await analyzeReportAI(description, attachmentsText);
+let aiResult;
+
+// 🚨 HARD RULE: unreadable attachment → auto-flag
+if (unreadableAttachment) {
+  const hasUnsupportedType = attachmentsText.includes("(unsupported type)");
+
+  aiResult = {
+    flagged: true,
+    reason: hasUnsupportedType
+      ? "Unsupported attachment type (AI reads PDF/TXT only)"
+      : "Attachment could not be read (possibly restricted) or contains no extractable content"
+  };
+} else {
+  aiResult = await analyzeReportAI(description, attachmentsText);
+}
 console.log("🤖 AI result:", aiResult);
 
       if (aiResult.flagged) {
