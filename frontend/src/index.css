@@ -90,6 +90,58 @@ body,
   color: hsl(144, 100%, 39%);
 }
 
+.admin-menu {
+  position: relative;
+}
+
+.admin-menu-btn {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: white;
+  font-size: inherit;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.admin-menu-btn:hover {
+  color: #00c950;
+}
+
+.admin-menu-btn.nav-active {
+  color: hsl(144, 100%, 39%);
+}
+
+.admin-menu-popout {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 220px;
+  background: hsl(0, 0%, 7%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  display: grid;
+  gap: 2px;
+  z-index: 20;
+}
+
+.admin-menu-popout a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.admin-menu-popout a:hover,
+.admin-menu-popout .nav-active {
+  background: rgba(0, 201, 80, 0.12);
+}
+
 .nav-left {
   display: flex;
   align-items: center;
@@ -468,11 +520,12 @@ body,
 
 .projects {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
   gap: 20px;
   padding: 0 20px 40px;
   box-sizing: border-box;
   width: 100%;
+  margin-top:35px;
 }
 
 .proj-card {
@@ -508,13 +561,16 @@ body,
 .proj-card h3 {
   background: hsl(0, 0%, 7%);
   margin-bottom: 10px;
+  margin-left:10px;
+  margin-top:0;
 }
 
 .proj-card p {
   background: hsl(0, 0%, 7%);
   font-weight: bold;
   margin-bottom: 12px;
-  color: hsl(0, 0%, 71%)
+  color: hsl(0, 0%, 71%);
+  margin-left:10px;
 }
 
 .proj-description {
@@ -1149,6 +1205,23 @@ body,
     gap: 20px;
   }
 
+  .admin-menu {
+    width: 100%;
+  }
+
+  .admin-menu-btn {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .admin-menu-popout {
+    position: static;
+    margin-top: 8px;
+    width: 100%;
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
   .nav-actions {
     flex-wrap: wrap;
     width: 100%;
@@ -1370,3 +1443,52 @@ body,
   }
 }
 
+.profile-link {
+  color: #00c950;
+  text-decoration: none;
+  font-weight: 100;
+  font-size:13px;
+}
+
+.profile-link:hover {
+  text-decoration: underline;
+}
+.email{
+  color:#03a042;
+  font-weight: 800;
+}
+.mini-profile-avatar,
+.proj-owner-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 201, 80, 0.12);
+  border: 1px solid rgba(0, 201, 80, 0.35);
+  color: #00c950;
+  font-size: 10px;
+  font-weight: 700;
+  
+}
+
+.proj-owner-row {
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+
+.proj-owner-link,
+.cr-profile-link,
+.forum-author-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cr-submitted-by-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}

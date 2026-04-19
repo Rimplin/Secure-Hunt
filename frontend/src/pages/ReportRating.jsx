@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 import { Star, ShieldAlert, Clock, CheckCircle, XCircle, Eye } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext_helper'
 import '../styles/ReportRating.css'
+import { Link } from "react-router-dom";
 
 const BASE = import.meta.env.VITE_REACT_APP_BACKEND_BASEURL
 
@@ -222,10 +223,19 @@ export default function ReportRating() {
                   <p className="cr-project-name">
                     📁 {report.projectId?.name || 'Unknown Project'}
                   </p>
-                  <p className="cr-submitted-by">
-                    by {report.submittedBy?.email || 'Anonymous'} &bull;{' '}
-                    {new Date(report.createdAt).toLocaleDateString()}
-                  </p>
+                  <div className="cr-submitted-by cr-submitted-by-row">
+  {report.submittedBy?._id ? (
+    <Link to={`/profile/${report.submittedBy._id}`} className="profile-link cr-profile-link">
+      <span className="mini-profile-avatar">
+        {report.submittedBy.email?.charAt(0).toUpperCase() || "?"}
+      </span>
+      <span>{report.submittedBy.email}</span>
+    </Link>
+  ) : (
+    <span>Anonymous</span>
+  )}
+  <span>• {new Date(report.createdAt).toLocaleDateString()}</span>
+</div>
                 </div>
                 <span
                   className="cr-severity-badge"

@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 import { MessageSquare, Plus, X, Send, Trash2, ChevronDown, ChevronUp } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext_helper'
 import '../styles/Forum.css'
-
+import { Link } from 'react-router-dom'
 const BASE = import.meta.env.VITE_REACT_APP_BACKEND_BASEURL
 
 function Avatar({ email, size = 32 }) {
@@ -172,13 +172,27 @@ export default function Forum() {
 
         
                 <div className="forum-post-header">
-                  <Avatar email={post.author?.email} />
-                  <div className="forum-post-meta">
-                    <span className="forum-post-author">{post.author?.email}</span>
-                    <span className="forum-post-date">
-                      {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </span>
-                  </div>
+                {post.author?._id ? (
+               <Link to={`/profile/${post.author._id}`} className="forum-author-link">
+               <Avatar email={post.author?.email} />
+               </Link>
+              ) : (
+               <Avatar email={post.author?.email} />
+              )}
+
+               <div className="forum-post-meta">
+               {post.author?._id ? (
+                <Link to={`/profile/${post.author._id}`} className="forum-author-link forum-post-author">
+                 {post.author?.email}
+               </Link>
+               ) : (
+               <span className="forum-post-author">{post.author?.email}</span>
+               )}
+
+               <span className="forum-post-date">
+              {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+               </span>
+             </div>
                   {(isAuthor || isAdmin) && (
                     <button className="forum-delete-btn" onClick={() => handleDeletePost(post._id)}>
                       <Trash2 size={14} />
@@ -209,19 +223,33 @@ export default function Forum() {
                       <p className="forum-no-comments">No comments yet. Be the first!</p>
                     )}
                     {post.comments?.map(comment => (
-                      <div key={comment._id} className="forum-comment">
-                        <Avatar email={comment.author?.email} size={26} />
-                        <div className="forum-comment-body">
-                          <div className="forum-comment-meta">
-                            <span className="forum-comment-author">{comment.author?.email}</span>
-                            <span className="forum-comment-date">
-                              {new Date(comment.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                            </span>
-                          </div>
-                          <p className="forum-comment-content">{comment.content}</p>
-                        </div>
-                      </div>
-                    ))}
+                    <div key={comment._id} className="forum-comment">
+                    {comment.author?._id ? (
+                    <Link to={`/profile/${comment.author._id}`} className="forum-author-link">
+                    <Avatar email={comment.author?.email} size={26} />
+                   </Link>
+                    ) : (
+                  <Avatar email={comment.author?.email} size={26} />
+                  )}
+
+                  <div className="forum-comment-body">
+                  <div className="forum-comment-meta">
+                   {comment.author?._id ? (
+                  <Link to={`/profile/${comment.author._id}`} className="forum-author-link forum-comment-author">
+                   {comment.author?.email}
+                 </Link>
+                  ) : (
+                  <span className="forum-comment-author">{comment.author?.email}</span>
+                  )}
+
+                  <span className="forum-comment-date">
+                 {new Date(comment.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                   </span>
+                   </div>
+                    <p className="forum-comment-content">{comment.content}</p>
+                   </div>
+                </div>
+                 ))}
 
                   
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Star, Shield, Award, TrendingUp, FileText, Calendar, ChevronRight, AlertTriangle, Building2, BarChart3, Users, Clock4, CheckCircle2, XCircle } from 'lucide-react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { Star, Shield, Award, TrendingUp, FileText, Calendar, ChevronRight, AlertTriangle, Building2, BarChart3, Users, Clock4, CheckCircle2, XCircle, Trash2 } from 'lucide-react'
 import { AuthContext } from '../context/AuthContext_helper'
 import '../styles/DeveloperProfile.css'
 
@@ -23,6 +23,9 @@ const STATUS_COLORS = {
 export default function DeveloperProfile() {
     const { user, loading: authLoading } = useContext(AuthContext)
     const navigate = useNavigate()
+    const params = useParams()
+    const viewedUserId = params.id || user?._id
+    const isOwnProfile = !params.id || params.id === user?._id
     const [profile, setProfile] = useState(null)
     const [companyAnalytics, setCompanyAnalytics] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -33,27 +36,31 @@ export default function DeveloperProfile() {
 
     useEffect(() => {
         if (authLoading) return
-        if (!user) return
+        if (!user || !viewedUserId) return
+        setLoading(true)
+        setError(null)
+        setProfile(null)
+        setCompanyAnalytics(null)
 
         const fetchProfile = async () => {
             try {
-                const endpoint = user.role === 'company'
-                    ? `${BASE}/api/projects/company/${user._id}/analytics`
-                    : `${BASE}/api/developers/${user._id}/profile`
+                const endpoint = `${BASE}/api/users/${viewedUserId}/profile`
 
                 const res = await fetch(endpoint, {
                     credentials: 'include',
                     cache: 'no-store',
                 })
+                const data = await res.json()
                 if (!res.ok) {
-                    const data = await res.json()
                     throw new Error(data.message || 'Failed to load profile')
                 }
-                const data = await res.json()
-                if (user.role === 'company') {
-                    setCompanyAnalytics(data)
+
+                if(data.mode === 'company'){
+                   setCompanyAnalytics(data)
+                   setProfile(null)
                 } else {
-                    setProfile(data)
+                   setProfile(data)
+                   setCompanyAnalytics(null)
                 }
             } catch (err) {
                 setError(err.message)
@@ -63,7 +70,35 @@ export default function DeveloperProfile() {
         }
 
         fetchProfile()
-    }, [user, authLoading])
+    }, [user, authLoading, viewedUserId])
+
+    const handleDeleteReport = async (reportId) => {
+    const confirmed = window.confirm("Delete this pending report?");
+    if (!confirmed) return;
+
+    try {
+        const res = await fetch(`${BASE}/api/reports/${reportId}`, {
+            method: "DELETE",
+            credentials: "include",
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message || "Failed to delete report");
+        }
+
+        setProfile((prev) => ({
+            ...prev,
+            allReports: (prev.allReports || []).filter((r) => r._id !== reportId),
+            acceptedReports: (prev.acceptedReports || []).filter((r) => r._id !== reportId),
+            totalReportsCount: Math.max((prev.totalReportsCount || 1) - 1, 0),
+            acceptedReportsCount: (prev.acceptedReports || []).filter((r) => r._id !== reportId && r.status === "accepted").length,
+        }));
+    } catch (err) {
+        alert(err.message);
+    }
+    }
 
     // --- Loading state ---
     if (authLoading || loading) {
@@ -98,8 +133,10 @@ export default function DeveloperProfile() {
         )
     }
 
-    if (user.role === 'company') {
+    if (companyAnalytics) {
         const companyStats = companyAnalytics || {
+            email: '',
+            role: 'company',
             totalProjects: 0,
             totalReports: 0,
             acceptedReports: 0,
@@ -113,11 +150,11 @@ export default function DeveloperProfile() {
             <div className="dp-container">
                 <div className="dp-header">
                     <div className="dp-avatar">
-                        {user.email?.charAt(0).toUpperCase() || '?'}
+                   {companyStats.email?.charAt(0).toUpperCase() || '?'}
                     </div>
                     <div className="dp-header-info">
-                        <h1 className="dp-username">{user.email}</h1>
-                        <span className="dp-role-badge company">COMPANY</span>
+                      <h1 className="dp-username">{companyStats.email}</h1>
+                      <span className="dp-role-badge company">COMPANY</span>
                     </div>
                     <div className="dp-header-glow" />
                 </div>
@@ -174,8 +211,8 @@ export default function DeveloperProfile() {
                             </button>
                         </div>
                     ) : (
-                        <div className="dp-reports-grid">
-                            {companyStats.projects.map((project) => (
+                        <div className="dp-reports-grid"> {/*here */}
+                            {companyStats.projects.map((project) => (  
                                 <div key={project.projectId} className="dp-report-card">
                                     <div className="dp-report-top">
                                         <div className="dp-report-title-wrap">
@@ -361,12 +398,31 @@ export default function DeveloperProfile() {
 
                                 <p className="dp-report-description">{report.description}</p>
 
+                                {report.attachments?.length > 0 && (
+                                    <div className="dp-report-attachments">
+                                    <p className="dp-report-attachments-title">Attachments:</p>
+                                    <div className="dp-report-attachments-list">
+                                        {report.attachments.map((attachment, index) => (
+                                            <a
+                                            key={`${report._id}-${index}`}
+                                            className="dp-report-attachment-link"
+                                            href={`${BASE}/api/reports/files/${attachment.filename}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                        {attachment.originalName || `Attachment ${index + 1}`}
+                                            </a>
+                                    ))}
+                                    </div>
+                                </div>
+                                )}
+
                                 {/* AI flag: only show when aiFlagged is true*/}
                                 {report.aiFlagged && (
-                                    <div className="dp-ai-flag">
-                                        <AlertTriangle size={14} />
-                                        <p>Flagged by AI: {report.aiReason}</p>
-                                    </div>
+                                <div className="dp-ai-flag">
+                                <AlertTriangle size={14} />
+                                <p>Flagged by AI: {report.aiReason}</p>
+                                </div>
                                 )}
 
                                 <div className="dp-report-footer">
@@ -399,6 +455,16 @@ export default function DeveloperProfile() {
                                         <span>{report.projectId.bounty}</span>
                                         <ChevronRight size={14} />
                                     </div>
+                                )}
+                                {isOwnProfile && report.status === 'pending' && (
+                                <button
+                                    className="dp-delete-report-btn"
+                                    onClick={() => handleDeleteReport(report._id)}
+                                    type="button"
+                                 >
+                                 <Trash2 size={14} />
+                                 Delete Report
+                                </button>
                                 )}
                             </div>
                         ))}

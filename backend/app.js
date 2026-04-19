@@ -37,6 +37,7 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/reports", require("./routes/reportRoutes"));
 app.use("/api/cves", require("./routes/cveRoutes"));
 app.use("/api/developers", require("./routes/developerRoutes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/security", require("./routes/securityRoutes"));
 
 app.get("/", (req, res) => {
