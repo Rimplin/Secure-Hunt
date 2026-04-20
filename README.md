@@ -269,5 +269,7 @@ _(Admin) Moderation tools to review and overrule report ratings._
 Secure Hunt is fully responsive, providing a seamless experience across mobile, tablet, and desktop devices.
 
 ![Mobile Home](frontend/src/assets/screenshots/mobile-home.jpeg)
+
 ![Mobile Hamburger](frontend/src/assets/screenshots/mobile-hamburger.jpeg)
+
 ![Mobile Bounties](frontend/src/assets/screenshots/mobile-bounties.jpeg)
