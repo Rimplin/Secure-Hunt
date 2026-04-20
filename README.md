@@ -1,7 +1,24 @@
-<h1 style="display: flex; align-items: center; gap: 10px;">
-  <img src="frontend/src/assets/Secure-Hunt-pic-black.png" height="40">
-  Secure Hunt
-</h1>
+<p>
+  <a href="https://securehunt.vercel.app">
+    <img src="https://img.shields.io/badge/Demo-Live-blue" />
+  </a>
+  
+  <img src="https://img.shields.io/badge/Frontend-React-61DAFB" />
+  <img src="https://img.shields.io/badge/Backend-Node.js-339933" />
+  <img src="https://img.shields.io/badge/Database-MongoDB-47A248" />
+</p>
+
+<p>
+  <img src="https://img.shields.io/badge/AI-Groq-orange" />
+  <img src="https://img.shields.io/badge/CVE-NVD-red" />
+  <img src="https://img.shields.io/badge/Payments-Stripe-635BFF" />
+  
+  <img src="https://img.shields.io/badge/Unit-Jest-C21325" />
+  <img src="https://img.shields.io/badge/API-Supertest-lightgrey" />
+  <img src="https://img.shields.io/badge/E2E-Cypress-17202C" />
+</p>
+
+# <img src="./Secure-Hunt-pic-black.png" width="26"> Secure Hunt
 
 Secure Hunt is a professional full-stack bug bounty platform designed to bridge the gap between security researchers (hunters) and organizations. The platform streamlines the vulnerability disclosure process with AI-powered moderation, integrated CVE intelligence, and secure payment workflows.
 
@@ -79,7 +96,9 @@ graph LR
 ```
 
 ### E2E Test Execution
-![Secure Hunt Full Workflow Demonstration](frontend/cypress/videos/full-workflow.cy.js.mp4)
+<p align="center">
+  <img src="./frontend/cypress/gifs/full-workflow.cy.js.gif" alt="E2E Testing GIF" width="720">
+</p>
 
 - **Unit & Integration**: Jest and Supertest are used to validate backend controllers, models, and API routes.
 - **End-to-End (E2E)**: Cypress (running on Firefox) tests the full user journey from signup to bug submission.
