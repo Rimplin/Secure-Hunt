@@ -230,6 +230,10 @@ _Integrated CVE vulnerability reports for project tech stacks._
 ![AI Guidance](frontend/src/assets/screenshots/ai-guidance.png)
 _AI-generated security guidance and patch recommendations._
 
+### Post New Project
+![Post New Project](frontend/src/assets/screenshots/post-project.png)
+_Organizations can easily post new bug bounty projects with specific tech stacks and reward structures._
+
 ### CVE Search
 ![CVE Search](frontend/src/assets/screenshots/cve-search.png)
 _Real-time CVE intelligence search via the NVD API._
@@ -257,3 +261,13 @@ _(Admin) Manage user roles and platform permissions._
 ### Report Overrule
 ![Report Overrule](frontend/src/assets/screenshots/report-overrule.png)
 _(Admin) Moderation tools to review and overrule report ratings._
+
+---
+
+## Mobile Responsiveness
+
+Secure Hunt is fully responsive, providing a seamless experience across mobile, tablet, and desktop devices.
+
+![Mobile Home](frontend/src/assets/screenshots/mobile-home.jpeg)
+![Mobile Hamburger](frontend/src/assets/screenshots/mobile-hamburger.jpeg)
+![Mobile Bounties](frontend/src/assets/screenshots/mobile-bounties.jpeg)
