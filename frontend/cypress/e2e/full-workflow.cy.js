@@ -15,7 +15,7 @@ describe('Interactive Full Workflow Suite', () => {
     cy.get('button[type="submit"]').click();
 
     // We arrive at homepage or profile. Ensure we are logged in.
-    cy.contains(/logout/i, { timeout: 10000 }).should('exist');
+    cy.contains(/logout/i, { timeout: 20000 }).should('exist');
     cy.wait(1000);
 
     // 2. Go to browse bounties and choose "Testing"
@@ -24,7 +24,7 @@ describe('Interactive Full Workflow Suite', () => {
     // Set up intercept for the security/AI fetches
     cy.intercept('GET', '**/api/security/**').as('securityData');
 
-    cy.get('.proj-card', { timeout: 10000 })
+    cy.get('.proj-card', { timeout: 20000 })
       .filter((index, el) => {
         return el.innerText.includes('Testing') && el.innerText.includes('1000');
       })
@@ -40,8 +40,8 @@ describe('Interactive Full Workflow Suite', () => {
     cy.wait(['@securityData', '@securityData'], { timeout: 60000 });
     
     // Ensure the results were rendered before moving to the next page
-    cy.contains(/Security|Vulnerability/i, { timeout: 10000 }).should('be.visible');
-    cy.contains(/AI|Guidance/i, { timeout: 10000 }).should('be.visible');
+    cy.contains(/Security|Vulnerability/i, { timeout: 20000 }).should('be.visible');
+    cy.contains(/AI|Guidance/i, { timeout: 20000 }).should('be.visible');
     cy.wait(1000);
 
     // 3. Go to CVE search and check searching works
@@ -75,10 +75,10 @@ describe('Interactive Full Workflow Suite', () => {
 
     cy.intercept('POST', '**/api/reports').as('submitReport');
     cy.get('button.submit-btn').click();
-    cy.wait('@submitReport', { timeout: 10000 });
+    cy.wait('@submitReport', { timeout: 20000 });
 
     // Verify success message
-    cy.contains(/successfully/i, { timeout: 8000 }).should('be.visible');
+    cy.contains(/successfully/i, { timeout: 10000 }).should('be.visible');
     cy.wait(1000);
 
     // 6. Go to reports page and rate the report

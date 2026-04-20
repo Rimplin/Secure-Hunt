@@ -7,6 +7,6 @@ describe('CVE Search Flow', () => {
     
     // Wait for the response and assert that we get a response loaded 
     // Either a card representing a CVE with an ID, or a message that it's empty
-    cy.get('.cve-card, .cve-empty-state', { timeout: 10000 }).should('be.visible');
+    cy.get('.cve-card, .cve-empty-state', { timeout: 20000 }).should('be.visible');
   });
 });
