@@ -139,7 +139,7 @@ graph LR
 3.  **Frontend Configuration**:
     Navigate to `/frontend` and create a `.env` file:
     ```env
-    VITE_API_URL=http://localhost:5001/api
+    VITE_REACT_APP_BACKEND_BASEURL=http://localhost:5001
     ```
     Install dependencies and start:
     ```bash
