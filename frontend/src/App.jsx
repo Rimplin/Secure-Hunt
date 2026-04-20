@@ -14,6 +14,7 @@ import CreateProject from './pages/CreateProject.jsx'
 import CVESearch from './pages/CVESearch.jsx'
 import DeveloperProfile from './pages/DeveloperProfile.jsx'
 import AdminUsers from './pages/AdminUsers.jsx'
+import AdminReports from './pages/AdminReports.jsx'
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/profile" element={<DeveloperProfile />} />
         <Route path="/profile/:id" element={<DeveloperProfile />} />
         <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path="/admin/reports" element={<AdminReports />} />
       </Routes>
 
       <Footer />

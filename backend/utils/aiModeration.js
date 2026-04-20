@@ -5,83 +5,135 @@ const openai = new OpenAI({
   baseURL: "https://api.groq.com/openai/v1",
 });
 
-const analyzeReportAI = async (description, attachmentsText) => {
-  try {
-    const attachmentSection = attachmentsText && attachmentsText.trim().length > 0
+const askAIForJSON = async (prompt) => {
+  const response = await openai.chat.completions.create({
+    model: "llama-3.1-8b-instant",
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are a moderation AI for a cybersecurity bug bounty platform. You always respond with valid JSON only, with no extra text.",
+      },
+      {
+        role: "user",
+        content: prompt,
+      },
+    ],
+    temperature: 0,
+  });
+
+  const text = response.choices[0].message.content;
+  console.log("Raw AI response:", text);
+
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error("AI response format invalid");
+  }
+
+  return JSON.parse(jsonMatch[0]);
+};
+
+const analyzeDescriptionAI = async (description) => {
+  const prompt = `Evaluate ONLY the description of a vulnerability report.
+
+Rules:
+- Flag it if it is too vague, too generic, or lacks enough detail to understand the issue.
+- Flag it if it does not mention any specific component, endpoint, behavior, or vulnerability type.
+- Flag it if it contains only broad statements without explaining what happens, where, or how.
+- Flag it if it is not actionable.
+- Flag it if it needs more details
+- A description can be plausible but still be flagged if it lacks sufficient detail or is not actionable.
+- Only avoid flagging if the description provides enough information to understand and begin investigating the issue.- Do not call it unrelated to vulnerabilities unless it is clearly meaningless or nonsense.
+- The reason must be concise and high-level.
+- Do NOT enumerate missing elements (e.g., endpoint, behavior, vulnerability type).
+
+
+Description:
+${description}
+
+Respond ONLY in JSON:
+{
+  "flagged": true/false,
+  "reason": "short explanation"
+}`;
+
+  const parsed = await askAIForJSON(prompt);
+
+  return {
+    flagged: parsed.flagged === true,
+    reason: parsed.reason || "",
+  };
+};
+
+const analyzeAttachmentAI = async (attachmentsText) => {
+  const attachmentSection =
+    attachmentsText && attachmentsText.trim().length > 0
       ? attachmentsText
       : "No attachments provided";
 
-    const response = await openai.chat.completions.create({
-      model: "llama-3.1-8b-instant",
-      messages: [
-        {
-          role: "system",
-          content: "You are a moderation AI for a bug bounty platform. You evaluate vulnerability reports for quality. You always respond with valid JSON only, no extra text.",
-        },
-        {
-          role: "user",
-          content: `Evaluate this vulnerability report. Check the description AND the attachment content separately and independently.
- 
-A good description MUST:
-- Be at least 2 sentences long
-- Contain specific technical details (e.g. endpoint names, attack vectors, error messages, steps to reproduce, impact)
- 
-FLAG the description if ANY of these are true:
-- It is a single word or placeholder like "description", "test", "bug", "hello", "asdf"
-- It is a single generic sentence with no technical specifics
-- It is too short (less than 10 words)
-- It contains no technical vocabulary related to security or vulnerabilities
- 
-FLAG the attachment if:
-- It contains content completely unrelated to security or vulnerabilities
-- It is marked as [EMPTY PDF CONTENT]
-- It contains only gibberish, lorem ipsum, or placeholder text
- 
+  const prompt = `Evaluate ONLY the attachment content of a vulnerability report.
+
+Rules:
+- Ignore the description completely.
+- Flag it if it contains no useful vulnerability-related information.
+- Flag it if it is meaningless, irrelevant, unreadable, empty, or contains no extractable content.
+- Flag it if it appears to be general content (e.g., notes, cheat sheets, articles, class material) rather than evidence of a vulnerability.
+- Flag it if it does not contain logs, payloads, screenshots, traces, proof-of-concept material, reproduction details, or other technical evidence related to a vulnerability.
+- Do not flag it if it provides any technical evidence supporting a vulnerability, even if incomplete.
+
 DO NOT flag the attachment if:
 - No attachment was provided
 - The attachment type was unsupported (image/zip)
- 
---- DESCRIPTION START ---
-${description}
---- DESCRIPTION END ---
- 
---- ATTACHMENT CONTENT START ---
+
+Attachment text:
 ${attachmentSection}
---- ATTACHMENT CONTENT END ---
- 
-Respond with ONLY this JSON, no other text:
+
+Respond ONLY in JSON:
 {
-  "flagged": true or false,
-  "reasons": ["reason about description if flagged", "reason about attachment if flagged"]
-}
-If nothing is flagged, return: { "flagged": false, "reasons": [] }`,
-        },
-      ],
-      temperature: 0,
-    });
+  "flagged": true/false,
+  "reason": "short explanation"
+}`;
 
-    const text = response.choices[0].message.content;
-    console.log("Raw AI response:", text);
+  const parsed = await askAIForJSON(prompt);
 
-    try {
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) return { flagged: false, reason: "Invalid AI response format" };
+  return {
+    flagged: parsed.flagged === true,
+    reason: parsed.reason || "",
+  };
+};
 
-      const parsed = JSON.parse(jsonMatch[0]);
-      return {
-        flagged: parsed.flagged ?? false,
-        reason: Array.isArray(parsed.reasons) && parsed.reasons.length > 0
-          ? parsed.reasons.join(" | ")
-          : "No reason provided",
-      };
-    } catch {
-      return { flagged: false, reason: "JSON parsing failed" };
+const analyzeReportAI = async (description, attachmentsText) => {
+  try {
+    const descriptionResult = await analyzeDescriptionAI(description);
+    const attachmentResult = await analyzeAttachmentAI(attachmentsText);
+
+    const reasons = [];
+    if (descriptionResult.flagged && descriptionResult.reason) {
+      reasons.push(`Description: ${descriptionResult.reason}`);
     }
+    if (attachmentResult.flagged && attachmentResult.reason) {
+      reasons.push(`Attachment: ${attachmentResult.reason}`);
+    }
+
+    return {
+      flagged: descriptionResult.flagged || attachmentResult.flagged,
+      reason: reasons.length > 0 ? reasons.join(" | ") : "No reason provided",
+      descriptionFlagged: descriptionResult.flagged,
+      descriptionReason: descriptionResult.reason,
+      attachmentFlagged: attachmentResult.flagged,
+      attachmentReason: attachmentResult.reason,
+    };
   } catch (err) {
-    console.error("AI moderation error:", err.message);
-    return { flagged: false, reason: "AI analysis failed" };
+    console.error("❌ AI error:", err);
+    return {
+      flagged: false,
+      reason: "AI request failed",
+      descriptionFlagged: false,
+      descriptionReason: "",
+      attachmentFlagged: false,
+      attachmentReason: "",
+    };
   }
 };
 
 module.exports = { analyzeReportAI };
-

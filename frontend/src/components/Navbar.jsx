@@ -204,6 +204,13 @@ function Navbar() {
                                     >
                                         User Role Management
                                     </NavLink>
+                                    <NavLink
+                                        to="/admin/reports"
+                                        onClick={handleLinkClick}
+                                        className={({ isActive }) => isActive ? "nav-active" : ""}
+                                    >
+                                        Reports
+                                    </NavLink>
                                 </div>
                             )}
                         </div>
