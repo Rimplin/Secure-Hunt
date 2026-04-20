@@ -16,6 +16,7 @@
   <img src="https://img.shields.io/badge/Unit-Jest-C21325" />
   <img src="https://img.shields.io/badge/API-Supertest-lightgrey" />
   <img src="https://img.shields.io/badge/E2E-Cypress-17202C" />
+  <img src="https://img.shields.io/badge/Diagrams-Mermaid-FFA500" />
 </p>
 
 # <img src="./frontend/src/assets/Secure-Hunt-pic-black.png" width="26"> Secure Hunt
