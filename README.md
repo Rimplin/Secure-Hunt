@@ -82,6 +82,10 @@ sequenceDiagram
     B-->>F: Notify Hunter of Reward
 ```
 
+### Payment Interface
+![Stripe Payment](frontend/src/assets/screenshots/stripe-payment.png)
+_Secure escrow and payout management powered by the Stripe API via a Stripe connect account._
+
 ---
 
 ## Testing Strategy
@@ -100,9 +104,11 @@ graph LR
   <img src="./frontend/cypress/gifs/full-workflow.cy.js.gif" alt="E2E Testing GIF" width="720">
 </p>
 
-- **Unit & Integration**: Jest and Supertest are used to validate backend controllers, models, and API routes.
 - **End-to-End (E2E)**: Cypress (running on Firefox) tests the full user journey from signup to bug submission.
-- **CI/CD**: Automated pipelines on GitHub Actions run the full test suite on every pull request.
+### Unit & Integration Test Execution
+![Unit & Integration](frontend/src/assets/screenshots/tests.png)
+- **Unit & Integration**: Jest and Supertest are used to validate backend controllers, models, and API routes.
+- **CI/CD**: Automated pipelines on GitHub Actions run the full test suite on every commit / pull request.
 
 ---
 
