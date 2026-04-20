@@ -191,3 +191,63 @@ graph LR
 ---
 
 _All system diagrams and graphs in this documentation were generated using **Mermaid.js**._
+
+---
+
+## Screenshots
+
+### Signup Page
+![Signup Page](frontend/src/assets/screenshots/signup.png)
+_Create a new account as a Hunter or Company._
+
+### Signin Page
+![Signin Page](frontend/src/assets/screenshots/signin.png)
+_Securely access your Secure Hunt account._
+
+### Landing Page
+![Landing Page](frontend/src/assets/screenshots/landing.png)
+_The gateway to the Secure Hunt platform._
+
+### Browse Bounties
+![Browse Bounties](frontend/src/assets/screenshots/browse-bounties.png)
+_Explore active bug bounty programs from various organizations._
+
+### Project Tech Stack
+![Project Tech Stack](frontend/src/assets/screenshots/project-techstack.png)
+_Detailed project overview including the technical stack._
+
+### Vulnerability Report
+![Vulnerability Report](frontend/src/assets/screenshots/vulnerability-report.png)
+_Integrated CVE vulnerability reports for project tech stacks._
+
+### AI Guidance
+![AI Guidance](frontend/src/assets/screenshots/ai-guidance.png)
+_AI-generated security guidance and patch recommendations._
+
+### CVE Search
+![CVE Search](frontend/src/assets/screenshots/cve-search.png)
+_Real-time CVE intelligence search via the NVD API._
+
+### Security Forum
+![Security Forum](frontend/src/assets/screenshots/forum.png)
+_A community space for security researchers to collaborate._
+
+### Report Submission
+![Report Submission](frontend/src/assets/screenshots/report-submission.png)
+_Securely submit vulnerability reports with AI moderation._
+
+### Report History
+![Report History](frontend/src/assets/screenshots/report-history.png)
+_Track your submitted reports and their status._
+
+### User Profile
+![User Profile](frontend/src/assets/screenshots/profile.png)
+_Manage your user profile and reputation scores._
+
+### Role Management
+![Role Management](frontend/src/assets/screenshots/role-management.png)
+_(Admin) Manage user roles and platform permissions._
+
+### Report Overrule
+![Report Overrule](frontend/src/assets/screenshots/report-overrule.png)
+_(Admin) Moderation tools to review and overrule report ratings._
