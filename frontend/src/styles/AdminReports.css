@@ -1,0 +1,110 @@
+.admin-reports-page {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.admin-reports-header h1 {
+  color: #fff;
+  margin: 0;
+}
+
+.admin-reports-header p {
+  margin-top: 0.4rem;
+  color: #9ca3af;
+}
+
+.admin-reports-search {
+  width: 100%;
+  margin: 1rem 0 1.25rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #2f2f2f;
+  background: #0e0e0f;
+  color: #fff;
+}
+
+.admin-reports-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.admin-report-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid #252525;
+  background: #0f0f10;
+  border-radius: 12px;
+  padding: 0.9rem;
+}
+
+.admin-report-main h2 {
+  margin: 0;
+  font-size: 1rem;
+  color: #f9fafb;
+}
+
+.admin-report-main p {
+  margin: 0.35rem 0 0;
+  color: #d1d5db;
+  font-size: 0.88rem;
+}
+
+.admin-report-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.admin-report-actions select,
+.admin-report-actions button {
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #2f2f2f;
+}
+
+.admin-report-actions select {
+  background: #0e0e0f;
+  color: #fff;
+}
+
+.admin-report-actions button {
+  background: #14532d;
+  color: #dcfce7;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-report-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-reports-state,
+.admin-reports-empty {
+  min-height: 40vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d1d5db;
+  text-align: center;
+}
+
+.admin-reports-state.error {
+  color: #fca5a5;
+}
+
+.admin-reports-state.denied {
+  color: #fbbf24;
+}
+
+@media (max-width: 760px) {
+  .admin-report-card {
+    flex-direction: column;
+  }
+
+  .admin-report-actions {
+    justify-content: flex-start;
+  }
+}
