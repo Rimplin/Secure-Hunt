@@ -1,4 +1,7 @@
-# <img src="frontend/src/assets/Secure-Hunt-pic-black.png" height="40" style="vertical-align: middle;"> Secure Hunt
+<h1 style="display: flex; align-items: center; gap: 10px;">
+  <img src="frontend/src/assets/Secure-Hunt-pic-black.png" height="40">
+  Secure Hunt
+</h1>
 
 Secure Hunt is a professional full-stack bug bounty platform designed to bridge the gap between security researchers (hunters) and organizations. The platform streamlines the vulnerability disclosure process with AI-powered moderation, integrated CVE intelligence, and secure payment workflows.
 
