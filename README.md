@@ -95,7 +95,7 @@ graph LR
     C --> D[CI/CD Pipeline]
 ```
 
-### E2E Test Execution
+### E2E Test Execution (full video can be found [here](https://github.com/Rimplin/Secure-Hunt/tree/main/frontend/cypress/videos))
 <p align="center">
   <img src="./frontend/cypress/gifs/full-workflow.cy.js.gif" alt="E2E Testing GIF" width="720">
 </p>
