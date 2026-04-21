@@ -156,7 +156,7 @@ graph LR
 
 ### Running Tests
 - Backend: `npm test` (from /backend)
-- Frontend E2E: `npm run test:e2e` (from /frontend)
+- Frontend E2E: `npm run test:e2e` (from /frontend). You can also run `npx cypress open` to run the tests using the Cypress GUI. (Select full-workflow.cy.js to run all tests)
 
 ---
 
