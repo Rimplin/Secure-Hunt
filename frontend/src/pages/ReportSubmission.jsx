@@ -1,8 +1,10 @@
-import { useEffect, useState, useRef } from 'react'
-import { AlertCircle, Paperclip, Send, CheckCircle, XCircle, X } from 'lucide-react'
+import { useEffect, useState, useRef, useContext } from 'react'
+import { AlertCircle, Paperclip, Send, CheckCircle, XCircle, X, ShieldOff } from 'lucide-react'
+import { AuthContext } from '../context/AuthContext_helper'
 import '../styles/ReportSubmission.css'
 
 function ReportSubmission() {
+  const { user } = useContext(AuthContext)
   const [projects, setProjects] = useState([])
   const [form, setForm] = useState({
     projectId: '',
@@ -67,6 +69,18 @@ function ReportSubmission() {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  if (user?.role === 'company') {
+    return (
+      <div className="report-container">
+        <div className="report-header">
+          <ShieldOff size={32} className="report-icon" />
+          <h2>Access Restricted</h2>
+          <p>Report submission is not available for company accounts.</p>
+        </div>
+      </div>
+    )
   }
 
   return (

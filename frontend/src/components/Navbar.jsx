@@ -170,7 +170,9 @@ function Navbar() {
                     <NavLink to="/browser" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Browse Bounties</NavLink>
                     <NavLink to="/cves" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>CVE Search</NavLink>
                     <NavLink to="/forum" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Forum</NavLink>
-                    <NavLink to="/report" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Submit Report</NavLink>
+                    {(!user || user.role !== "company") && (
+                        <NavLink to="/report" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Submit Report</NavLink>
+                    )}
                     {user && (user.role === "company" || user.role === "administrator") && (
                         <NavLink to="/rate-reports" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Reports</NavLink>
                     )}
