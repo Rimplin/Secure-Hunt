@@ -3,6 +3,7 @@ const router = express.Router();
 const Project = require("../models/Project");
 const { getProjectSecurityReport } = require("../utils/nvdService");
 const { generateTestingGuidance } = require("../utils/aiGuidanceService");
+const { detectTechStack } = require("../utils/techStackService");
 
 /**
  * @route GET /api/security/report/:projectId
@@ -62,6 +63,57 @@ router.get("/testing-guidance/:projectId", async (req, res) => {
         },
       ],
     });
+  }
+});
+
+/**
+ * @route POST /api/security/scan-url
+ * @desc Detect tech stack from a URL, then fetch NVD security report and AI guidance directly.
+ */
+router.post("/scan-url", async (req, res) => {
+  try {
+    const { url } = req.body;
+    if (!url) {
+      return res.status(400).json({ message: "URL is required" });
+    }
+
+    // 1. Detect Tech Stack
+    const techStack = await detectTechStack(url);
+
+    // 2. Fetch NVD Security Report
+    let securityReport = null;
+    let aiGuidance = null;
+    const isTechStackEmpty = Object.values(techStack).every(comp => !comp.type || comp.type === "Unknown");
+
+    if (!isTechStackEmpty) {
+      try {
+        securityReport = await getProjectSecurityReport(techStack);
+      } catch (err) {
+        console.error("Failed to generate security report:", err);
+      }
+    }
+
+    // 3. Generate AI Testing Guidance if report was successfully generated
+    if (securityReport) {
+      try {
+        aiGuidance = await generateTestingGuidance(securityReport);
+      } catch (err) {
+        console.error("Failed to generate AI guidance:", err);
+      }
+    } else {
+      securityReport = { summary: { riskLevel: "UNKNOWN", totalVulnerabilities: 0 }, details: {} };
+      aiGuidance = { recommendations: [], message: "No security report available to evaluate." };
+    }
+
+    res.json({
+      techStack,
+      securityReport,
+      aiGuidance
+    });
+
+  } catch (error) {
+    console.error("Error in /scan-url:", error.message);
+    res.status(500).json({ message: "Failed to perform URL scan" });
   }
 });
 

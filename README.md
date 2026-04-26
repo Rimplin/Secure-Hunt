@@ -233,11 +233,15 @@ _AI-generated security guidance and patch recommendations._
 
 ### Post New Project
 ![Post New Project](frontend/src/assets/screenshots/post-project.png)
-_Organizations can easily post new bug bounty projects with specific tech stacks and reward structures._
+_Organizations can easily post new bug bounty projects with specific tech stacks and reward structures or by typing in their website's URL that will generate the techstack automatically via publicly available information in the page's html using Groq AI to scan and analyze it then make a probabilistic prediction on the technologies used._
 
 ### CVE Search
 ![CVE Search](frontend/src/assets/screenshots/cve-search.png)
 _Real-time CVE intelligence search via the NVD API._
+
+### URL Scan (CVE Search)
+![URL Scan](frontend/src/assets/screenshots/url-scan.png)
+_Scan any URL to automatically identify its tech stack and generate its corresponding vulnerability report alongside AI guidance._
 
 ### Security Forum
 ![Security Forum](frontend/src/assets/screenshots/forum.png)

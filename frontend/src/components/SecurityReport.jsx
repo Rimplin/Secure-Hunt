@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/SecurityReport.css';
 
-const SecurityReport = ({ projectId }) => {
+const SecurityReport = ({ projectId, reportData }) => {
   const [report, setReport] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!reportData);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (reportData) {
+      setReport(reportData);
+      setLoading(false);
+      return;
+    }
+
     const fetchReport = async () => {
       try {
         setLoading(true);
@@ -27,7 +33,7 @@ const SecurityReport = ({ projectId }) => {
     if (projectId) {
       fetchReport();
     }
-  }, [projectId]);
+  }, [projectId, reportData]);
 
   if (loading) {
     return <div className="loading-report">Generating Vulnerability Report from NVD...</div>;

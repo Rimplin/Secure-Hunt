@@ -19,6 +19,9 @@ function CreateProject() {
     osVersion: "",
   });
 
+  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [isFetching, setIsFetching] = useState(false);
+
   const [toast, setToast] = useState(null); // { type: 'success'|'error', msg }
 
   const showToast = (type, msg) => {
@@ -64,6 +67,7 @@ function CreateProject() {
           webServerType: "", webServerVersion: "",
           osType: "", osVersion: ""
         });
+        setWebsiteUrl("");
       } else {
         const data = await res.json();
         showToast("error", `❌ ${data.message || "Error creating project"}`);
@@ -71,6 +75,49 @@ function CreateProject() {
     } catch (err) {
       console.error(err);
       showToast("error", "❌ Network error. Is the server running?");
+    }
+  };
+
+  const handleFetchTechStack = async () => {
+    if (!websiteUrl) {
+      showToast("error", "❌ Please enter a website URL first.");
+      return;
+    }
+
+    setIsFetching(true);
+    try {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/projects/fetch-techstack`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ url: websiteUrl })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setForm(prev => ({
+          ...prev,
+          frontendType: data.frontend?.type || "",
+          frontendVersion: data.frontend?.version || "",
+          backendType: data.backend?.type || "",
+          backendVersion: data.backend?.version || "",
+          databaseType: data.database?.type || "",
+          databaseVersion: data.database?.version || "",
+          webServerType: data.webServer?.type || "",
+          webServerVersion: data.webServer?.version || "",
+          osType: data.os?.type || "",
+          osVersion: data.os?.version || ""
+        }));
+        showToast("success", "✨ Tech stack fetched successfully!");
+      } else {
+        const errorData = await res.json();
+        showToast("error", `❌ ${errorData.message || "Failed to fetch tech stack"}`);
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("error", "❌ Network error while fetching tech stack.");
+    } finally {
+      setIsFetching(false);
     }
   };
 
@@ -84,6 +131,26 @@ function CreateProject() {
       </div>
 
       <form onSubmit={handleSubmit}>
+        <div className="field-row url-fetch-row">
+          <label>Company Website:</label>
+          <div className="url-input-group">
+            <input 
+              type="text" 
+              placeholder="https://example.com" 
+              value={websiteUrl} 
+              onChange={(e) => setWebsiteUrl(e.target.value)} 
+            />
+            <button 
+              type="button" 
+              className="fetch-btn" 
+              onClick={handleFetchTechStack}
+              disabled={isFetching}
+            >
+              {isFetching ? "Fetching..." : "Auto-fetch Tech Stack"}
+            </button>
+          </div>
+        </div>
+
         <div className="field-row">
           <label>Name:</label>
           <input name="name" value={form.name} placeholder="Project name" onChange={handleChange} required />

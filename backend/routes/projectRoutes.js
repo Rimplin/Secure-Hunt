@@ -3,6 +3,7 @@ const router = express.Router();
 const Project = require("../models/Project");
 const Report = require("../models/Report");
 const { protect, authorize } = require("../middleware/authMiddleware");
+const { detectTechStack } = require("../utils/techStackService");
 
 // GET all projects
 router.get("/", async (req, res) => {
@@ -209,6 +210,19 @@ router.post("/", protect, authorize("company", "administrator"), async (req, res
     res.status(201).json(saved);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+router.post("/fetch-techstack", protect, authorize("company", "administrator"), async (req, res) => {
+  try {
+    const { url } = req.body;
+    if (!url) {
+      return res.status(400).json({ message: "URL is required" });
+    }
+    const techStack = await detectTechStack(url);
+    res.json(techStack);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to detect tech stack", error: err.message });
   }
 });
 

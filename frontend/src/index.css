@@ -672,6 +672,38 @@ body,
   margin-bottom: 0;
 }
 
+.cve-mode-toggle {
+  display: flex;
+  background: hsl(0, 0%, 10%);
+  border-radius: 12px;
+  padding: 6px;
+  margin: 24px auto 0;
+  max-width: fit-content;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cve-mode-btn {
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  color: hsl(0, 0%, 55%);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.cve-mode-btn:hover {
+  color: white;
+}
+
+.cve-mode-btn.active {
+  background: linear-gradient(135deg, hsl(144, 100%, 39%), hsl(144, 100%, 27%));
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 201, 80, 0.3);
+}
+
 .cve-search-form {
   display: flex;
   justify-content: center;

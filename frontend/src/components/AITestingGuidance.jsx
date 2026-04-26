@@ -3,12 +3,26 @@ import "../styles/AITestingGuidance.css";
 
 const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
 
-const AITestingGuidance = ({ projectId }) => {
+const AITestingGuidance = ({ projectId, guidanceData }) => {
   const [guidance, setGuidance] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!guidanceData);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (guidanceData) {
+      const data = { ...guidanceData };
+      if (Array.isArray(data.recommendations)) {
+        data.recommendations.sort(
+          (a, b) =>
+            (PRIORITY_ORDER[a.priority?.toLowerCase()] ?? 9) -
+            (PRIORITY_ORDER[b.priority?.toLowerCase()] ?? 9)
+        );
+      }
+      setGuidance(data);
+      setLoading(false);
+      return;
+    }
+
     if (!projectId) return;
 
     const fetchGuidance = async () => {
@@ -37,7 +51,7 @@ const AITestingGuidance = ({ projectId }) => {
     };
 
     fetchGuidance();
-  }, [projectId]);
+  }, [projectId, guidanceData]);
 
   if (loading) {
     return (
