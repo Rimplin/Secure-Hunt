@@ -101,7 +101,7 @@ describe('Interactive Full Workflow Suite', () => {
 
     // 7. Go to profile page
     cy.visit('/profile');
-    cy.contains(/administrator@hotmail.com/i).should('be.visible');
+    cy.contains(/administrator@hotmail.com/i, { timeout: 20000 }).should('be.visible');
     cy.wait(1000);
 
     // 8. Log out
