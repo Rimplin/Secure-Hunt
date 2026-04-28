@@ -176,7 +176,7 @@ function Navbar() {
                     {user && (user.role === "company" || user.role === "administrator") && (
                         <NavLink to="/rate-reports" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>Reports</NavLink>
                     )}
-                    <NavLink to="/recommendations" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>AI Recommendations</NavLink>
+                    {/* <NavLink to="/recommendations" onClick={handleLinkClick} className={({ isActive }) => isActive ? "nav-active" : ""}>AI Recommendations</NavLink> */}
                     {isAdministrator && (
                         <div className="admin-menu" ref={adminMenuRef}>
                             <button
